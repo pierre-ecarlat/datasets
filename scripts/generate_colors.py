@@ -2,7 +2,7 @@
 
 """
 Generate a list of distributed colors for a dataset. Example of use:
-python generate_colors.py Food 67
+python generate_colors.py Foodinc 67
 """
 
 # Auto-generated python class for protobuf formats

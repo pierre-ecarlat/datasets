@@ -75,7 +75,6 @@ if [ -f $DATASET_CONV_DIR/infos/colors.txt ]; then
 else
     categories="$BUILDERS/$DATASET_NAME/categories.txt"
     if [ -f $categories ]; then
-        echo "-------------------------------------------"
         echo "Will create the colors for $DATASET_NAME."
         python $SCRIPTS/generate_colors.py $DATASET_CONV_DIR $(cat $categories | wc -l)
         echo "Copy the categories for $DATASET_NAME."
@@ -85,6 +84,16 @@ else
     fi
 fi
 
+
+##############################################
+# Generate a list of all the images
+echo "-------------------------------------------"
+if [ ! -f $DATASET_CONV_DIR/ImageSets/all.txt ]; then 
+    echo "Generate the list of images in ImageSets/all.txt."
+    ls -1 VOC2007/Images/ | cut -d. -f1 > $DATASET_CONV_DIR/ImageSets/all.txt
+else
+    echo "List already exits, no need to regenerate it."
+fi
 
 ##############################################
 # Link it to concerning directories
