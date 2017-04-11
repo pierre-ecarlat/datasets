@@ -1,0 +1,3 @@
+nb_images: 9494
+nb_images_usable: 9202
+nb_boxes: 28771
