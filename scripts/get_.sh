@@ -90,7 +90,7 @@ fi
 echo "-------------------------------------------"
 if [ ! -f $DATASET_CONV_DIR/ImageSets/all.txt ]; then 
     echo "Generate the list of images in ImageSets/all.txt."
-    ls -1 VOC2007/Images/ | cut -d. -f1 > $DATASET_CONV_DIR/ImageSets/all.txt
+    ls -1 $DATASET_CONV_DIR/Images/ | cut -d. -f1 > $DATASET_CONV_DIR/ImageSets/all.txt
 else
     echo "List already exits, no need to regenerate it."
 fi

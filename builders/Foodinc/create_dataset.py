@@ -32,7 +32,7 @@ with open(args.txt_dataset) as f:
         image_annotations = line[3]
         image_url = line[4]
 
-        details = str(idx+1) + " " + str(image_id) + " " + str(image_rId) + "\n"
+        details = str(idx) + " " + str(image_id) + " " + str(image_rId) + "\n"
         with io.FileIO(str(args.output_dir) + "/ids.txt", "a") as file:
             file.write(details)
 

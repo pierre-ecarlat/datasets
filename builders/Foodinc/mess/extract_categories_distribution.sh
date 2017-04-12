@@ -74,8 +74,8 @@ echo -e "nb_images: $NB_IMAGES\nnb_images_usable: $NB_IMAGES_NS\nnb_boxes: $NB_B
 
 
 
-awk '{printf("%01d %s\n", NR, $0)}' output_categ_distrib.txt | head -n -1 | sort -k2 -n > output_categ_distrib_idxes.txt
-cat dataset_9494.txt | grep "false;" | awk '{printf("%01d %s\n", NR, $0)}' | cut -d ' ' -f1 > tmp
+awk '{printf("%01d %s\n", NR-1, $0)}' output_categ_distrib.txt | head -n -1 | sort -k2 -n > output_categ_distrib_idxes.txt
+cat dataset_9494.txt | grep "false;" | awk '{printf("%01d %s\n", NR-1, $0)}' | cut -d ' ' -f1 > tmp
 paste tmp output_categ.txt | head -n -1 | tr "\t" " " > output_categ_idxes.txt
 rm tmp
 cp output_categ_idxes.txt output_categ_idxes_tmp.txt
@@ -88,7 +88,7 @@ for ((l=0; l<${#lines[@]}; l++)); do
   IFS=' ' tmp=(${lines[$l]})
   curr_categ=${tmp[0]}
   
-  list_imgs="$(cat output_categ_idxes_tmp.txt | grep \ $(($curr_categ - 1))\  | cut -d' ' -f1 | sort -R)"
+  list_imgs="$(cat output_categ_idxes_tmp.txt | grep \ $curr_categ\  | cut -d' ' -f1 | sort -R)"
   IFS='\n'
   readarray -t tmp2 <<<"$list_imgs"
   
@@ -100,7 +100,7 @@ for ((l=0; l<${#lines[@]}; l++)); do
     test+=("${tmp2[$i]}")
   done
   
-  awk '!/'\ $(($curr_categ - 1))\ '/' output_categ_idxes_tmp.txt > temp && mv temp output_categ_idxes_tmp.txt
+  awk '!/'\ $curr_categ\ '/' output_categ_idxes_tmp.txt > temp && mv temp output_categ_idxes_tmp.txt
 done 
 
 rm output_categ_idxes_tmp.txt
