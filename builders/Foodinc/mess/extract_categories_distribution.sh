@@ -75,7 +75,7 @@ echo -e "nb_images: $NB_IMAGES\nnb_images_usable: $NB_IMAGES_NS\nnb_boxes: $NB_B
 
 
 awk '{printf("%01d %s\n", NR, $0)}' output_categ_distrib.txt | head -n -1 | sort -k2 -n > output_categ_distrib_idxes.txt
-awk '{printf("%01d %s\n", NR, $0)}' dataset_9494.txt | grep "false;" | cut -d' ' -f1 > tmp
+cat dataset_9494.txt | grep "false;" | awk '{printf("%01d %s\n", NR, $0)}' | cut -d ' ' -f1 > tmp
 paste tmp output_categ.txt | head -n -1 | tr "\t" " " > output_categ_idxes.txt
 rm tmp
 cp output_categ_idxes.txt output_categ_idxes_tmp.txt
