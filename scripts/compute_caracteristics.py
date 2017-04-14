@@ -75,11 +75,11 @@ if __name__ == "__main__":
             file.write(" ".join([row if isinstance(row, str) else str(row[0]) for row in box]) + "\n")
     
     # Create nb_images_per_category.txt file
-    categs = [0]*(max_categ + 2 - min_categ)
+    categs = [0]*(max_categ + 1 - min_categ)
     for box in boxes:
         for element in box:
             if isinstance(element, str): continue 
-            categs[int(element[0])] += 1
+            categs[int(element[0]) - min_categ] += 1
     for categ in categs:
         with io.FileIO(os.path.join(output_dir, "nb_images_per_category.txt"), "a") as file:
             file.write(str(categ) + "\n")
