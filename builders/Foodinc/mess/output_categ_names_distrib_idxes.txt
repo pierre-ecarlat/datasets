@@ -1,0 +1,67 @@
+34	Crutacean
+61	Shellfish
+64	Steamed food
+66	Other dairy products
+73	Ramen
+77	Udon
+81	Soymilk
+82	Steak
+96	Mushrooms
+96	Soba
+97	Japanese pastry
+114	Other bread
+126	Cheese
+130	Curry
+138	Pot
+143	Broccoli
+143	Nuts & seeds
+144	Potato - pumpkins salad
+150	Porridge
+154	Beans
+154	Sweet bread
+158	Alcohol
+161	Juice
+175	Ham - baccon
+176	Bento
+178	Cooked bread
+189	Other soyfoods
+193	Milk
+216	Beef
+219	Water
+224	Pork
+263	Sandwich
+265	Other rice
+273	Other noodles
+279	Other rice dishes
+297	Grilled food
+347	White fish
+362	Blue fish
+379	Pastry
+390	Seaweed salad
+392	Fried food
+435	Chicken
+446	Root crops
+448	Bread
+460	Vegetable juice
+473	Tofu
+480	Other meat
+493	Eggs
+503	Egg dish
+514	Rice ball - seaweed roll
+535	Tomato
+540	Natto
+553	Coffe - tea
+558	Vinegared salad
+572	Other vegetables
+616	Other drinks
+720	Other fish
+792	Brown rice
+792	Yogurt
+938	Green and yellow vegetables
+938	Simmered food
+942	Fruits
+951	Stir-fried food
+1043	Proteinized salad
+1290	White rice
+2658	Green salad
+2722	Soup stock

@@ -2,7 +2,7 @@
 
 """
 Visualization of a dataset. Example of use:
-python diplay_dataset.py Food
+python diplay_dataset.py Foodinc
 """
 
 # Auto-generated python class for protobuf formats

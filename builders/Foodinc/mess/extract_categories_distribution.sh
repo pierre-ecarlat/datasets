@@ -110,8 +110,8 @@ test_text=""
 for ((i=0; i<${#trainval[@]}; i++)); do trainval_text+="${trainval[$i]};"; done
 for ((i=0; i<${#test[@]}; i++)); do test_text+="${test[$i]};"; done
 
-echo -e $trainval_text | tr ";" "\n" > trainval.txt
-echo -e $test_text | tr ";" "\n" > test.txt
+echo -e $trainval_text | tr ";" "\n" | head -n -1 > trainval.txt
+echo -e $test_text | tr ";" "\n" | head -n -1 > test.txt
 
 
 
