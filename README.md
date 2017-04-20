@@ -13,6 +13,7 @@ apt install xml-twig-tools
 To download a dataset, simply do:
 ```
 bash scripts/get_.sh DATASET_NAME
+```
 
 
 # Datasets
