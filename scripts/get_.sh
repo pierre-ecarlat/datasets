@@ -13,6 +13,7 @@ elif [ $# -gt $NB_ARGUMENTS_MAX ]; then
   exit 2
 fi
 
+
 ##############################################
 # General variables
 DATASET_NAME=$1
@@ -86,7 +87,7 @@ fi
 
 
 ##############################################
-# Generate a list of all the images
+# Generate the lists of all the images
 echo "-------------------------------------------"
 if [ ! -f $DATASET_CONV_DIR/ImageSets/all.txt ]; then 
     echo "Generate the list of images in ImageSets/all.txt."
@@ -94,6 +95,13 @@ if [ ! -f $DATASET_CONV_DIR/ImageSets/all.txt ]; then
 else
     echo "List already exits, no need to regenerate it."
 fi
+if [ ! -f $DATASET_CONV_DIR/ImageSets/trainval.txt ]; then 
+    echo "Generate the train and test set lists of images."
+    python $SCRIPTS/generate_lists.py $DATASET_CONV_DIR 0.8
+else
+    echo "Train and/or test set lists already exist."
+fi
+
 
 ##############################################
 # Link it to concerning directories

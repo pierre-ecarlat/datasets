@@ -56,3 +56,6 @@ with open(args.txt_dataset) as f:
                 file.write("Images/skipped/" + str(idx) + ".png\n")
 
         print (str(idx) + " / " + str(len(l)) + " done")
+
+
+

@@ -11,6 +11,7 @@ import io
 import numpy as np
 import random
 import os
+import compute_caracteristics as cc
 
 
 def getArguments():
@@ -20,7 +21,7 @@ def getArguments():
     # Required arguments
     parser.add_argument('dataset', help='\
     The directory with the dataset.')
-    parser.add_argument('proportion', type=float, help='\
+    parser.add_argument('proportion', default=0.8, type=float, help='\
     The proportion for the dataset, between 0 and 1. 0.8 would create a trainval.txt \
     with 80% of the images, and the train.txt with 80% of the train_val images.')
     
@@ -38,21 +39,43 @@ if __name__ == "__main__":
     if not os.path.exists(dir_lists + "all.txt"):
         print ("ImageSets/all.txt is missing.. Please compute it.")
     
-    images = open(dir_lists + "all.txt").readlines()
-    random.shuffle(images)
+    # Create the caracteristics
+    if cc.createCaracts(args.dataset, "all") == -1:
+        raise SystemExit
     
-    # Split it
-    nb_images   = len(images)
-    nb_trainval = int(nb_images   * args.proportion)
-    nb_train    = int(nb_trainval * args.proportion)
-    i_trainval = images[:nb_trainval]
-    i_test     = images[nb_trainval:]
-    i_train    = i_trainval[:nb_train]
-    i_val      = i_trainval[nb_train:]
+    # Get caracteristics directory
+    dir_caracts = os.path.join(dir_lists, "caracteristics_all") + "/"
     
-    # Write lists
-    open(dir_lists + "trainval.txt", 'w').writelines(np.sort(i_trainval))
-    open(dir_lists + "test.txt"    , 'w').writelines(np.sort(i_test))
-    open(dir_lists + "train.txt"   , 'w').writelines(np.sort(i_train))
-    open(dir_lists + "val.txt"     , 'w').writelines(np.sort(i_val))
+    # Create the output_categ_distrib_idxes.txt
+    nipc = open(dir_caracts + "nb_images_per_category.txt").readlines()
+    nipc_sorted_idx = sorted(range(len(nipc)), key=lambda k: int(nipc[k][:-1]), reverse=True)
+    # Create the output_categ_idxes.txt
+    cipi = open(dir_caracts + "categories_idx_per_image.txt").readlines()
+    cipi_used = [False] * len(cipi)
+    
+    trainval = ""
+    test = ""
+    # for line in output_categ_distrib_idxes.txt
+    for categ_idx in range(len(nipc)):
+        curr_categ = nipc_sorted_idx[categ_idx] + 1
+        list_img = []
+        for j in range(len(cipi)):
+            if not cipi_used[j]:
+                curr_cipi = cipi[j].split()
+                if str(curr_categ) in curr_cipi[1:]: 
+                    list_img.append(curr_cipi[0])
+                    cipi_used[j] = True
+        
+        eighty = int(len(list_img) * 0.8)
+        for j in range(0, eighty):
+            trainval += list_img[j] + "\n"
+        for j in range(eighty, len(list_img)):
+            test += list_img[j] + "\n"
+    
+    trainval = trainval[:-1]
+    test = test[:-1]
+    open(dir_lists + "trainval.txt", 'w').writelines(trainval)
+    open(dir_lists + "test.txt"    , 'w').writelines(test)
+    
+    
     

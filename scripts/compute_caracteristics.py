@@ -14,6 +14,7 @@ import cv2
 # Extensions
 E_IMG = '.png'
 E_ANN = '.txt'
+E_LIST = '.txt'
 
 
 def getArguments():
@@ -29,22 +30,21 @@ def getArguments():
     The list of images (ImageSets/{all ; trainval ; test ; ... }.txt).')
     
     return parser.parse_args()
-    
 
-if __name__ == "__main__":
-    # Get the arguments
-    args = getArguments()
-    
+
+def createCaracts(dataset_path, list_name):
     # Check conditions
-    list_path = os.path.join(args.dataset, "ImageSets", args.list + ".txt")
+    list_path = os.path.join(dataset_path, "ImageSets", list_name + E_LIST)
     if not os.path.isfile(list_path):
-        print "Can't find the file ImageSets/" + args.list + ".txt."
-        raise SystemExit
+        print "Can't find the file ImageSets/" + list_name + E_LIST
+        return -1
     
     # Output directory
-    output_dir = os.path.join(args.dataset, "ImageSets", "caracteristics_" + args.list)
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    output_dir = os.path.join(dataset_path, "ImageSets", "caracteristics_" + list_name)
+    if os.path.exists(output_dir):
+        print "Caracteristics already computed in " + output_dir
+        return 1
+    os.makedirs(output_dir)
     
     # Global variables
     nb_images = sum(1 for line in open(list_path))
@@ -56,8 +56,8 @@ if __name__ == "__main__":
     boxes = []
     names = [line.rstrip('\n') for line in open(list_path)]
     for name in names:
-        image_path = os.path.join(args.dataset, "Images", name + E_IMG)
-        annotation_path = os.path.join(args.dataset, "Annotations", name + E_ANN)
+        image_path = os.path.join(dataset_path, "Images", name + E_IMG)
+        annotation_path = os.path.join(dataset_path, "Annotations", name + E_ANN)
         
         image_boxes = []
         image_boxes.append(name)
@@ -92,6 +92,15 @@ if __name__ == "__main__":
     for x_boxes in nb_images_with_x_boxes:
         with io.FileIO(os.path.join(output_dir, "nb_images_with_x_boxes.txt"), "a") as file:
             file.write(str(x_boxes) + "\n")
+    
+    return 1
+    
+
+if __name__ == "__main__":
+    # Get the arguments
+    args = getArguments()
+    
+    createCaracts(args.dataset, args.list)
         
     raise SystemExit
     

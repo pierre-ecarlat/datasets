@@ -2,7 +2,7 @@
 
 """
 Visualization of a category. Example of use:
-python diplay_category.py Foodinc
+python diplay_category.py Foodinc 1
 """
 
 # Auto-generated python class for protobuf formats

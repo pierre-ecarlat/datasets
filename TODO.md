@@ -1,6 +1,4 @@
-[ ] Add a "clean" option to scripts/get_.sh
-[ ] Review and comment builders/Foodinc/create_dataset.py
-[ ] Get the dataset_9200.txt filetext for Foodinc
-[ ] Create a "generate_lists.py" script, to generate the lists "train", "test", "trainval", etc.. Should take the percentage of training data over the dataset as argument.
-[ ] Propose a --jpg option for lighter datasets (but should also be implemented in the framework then)
-[ ] Write a script which generates a database caracteristics
+[ ] Add a "clean" option to scripts/get_.sh (to clean the datasets_orig).
+[ ] Include the train.txt and val.txt into the "generate_lists.py" script.
+[ ] Propose a --jpg option to scripts/get_.sh (builders/xxx/convert.sh) for lighter datasets.
+[ ] Write a script generating all the dataset caracteristics.
