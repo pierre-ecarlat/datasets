@@ -25,7 +25,7 @@ def getArguments():
     The directory with the dataset (should have Images/ and Annotations/).')
     parser.add_argument('test_results_dir', help='\
     The directory with the results.')
-    parser.add_argument('threshold', default=0.3, help='\
+    parser.add_argument('threshold', default=0.0, help='\
     The threshold for vcisualization, between 0 and 1, 0.3 is the default value.')
     
     return parser.parse_args()
@@ -87,12 +87,20 @@ if __name__ == "__main__":
         cv2.namedWindow('input')
         cv2.moveWindow('input', 0, 0)
         image = cv2.imread(image_path)
+        #img_w, img_h, _ = image.shape
+        #ratio = min(500./img_w, 350./img_h)
+        #cv2.resize(image, (int(img_w * ratio), int(img_h * ratio)))
+        
         for box in all_images[current_img][1]:
             if box[1] > float(args.threshold):
-                cv2.rectangle(image, (box[2],box[3]), (box[4],box[5]), colors[box[0]-1], 2)
+                #cv2.rectangle(image, (int(box[2]*ratio),int(box[3]*ratio)), 
+                #                     (int(box[4]*ratio),int(box[5]*ratio)), colors[box[0]-1], 2)
+                cv2.rectangle(image, (box[2],box[3]),(box[4],box[5]), colors[box[0]-1], 2)
                 label = categories[box[0]-1] + ": " + str(box[1])
+                #point = (int(box[2]*ratio), int(box[3]*ratio)+15)
                 point = (box[2], box[3]+15)
                 size = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.4, 1)[0]
+                #cv2.rectangle(image, (int(box[2]*ratio), int(box[3]*ratio)), (point[0]+size[0], point[1]+size[1]), (255,255,255), -1)
                 cv2.rectangle(image, (box[2], box[3]), (point[0]+size[0], point[1]+size[1]), (255,255,255), -1)
                 cv2.putText(image, label, point, cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0,0,0), 1)
                 

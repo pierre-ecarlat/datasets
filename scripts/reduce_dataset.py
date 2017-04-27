@@ -26,8 +26,8 @@ def getArguments():
     The directory with the dataset to reduce.')
     parser.add_argument('dataset_dest', help='\
     The directory where to save the reduced dataset.')
-    parser.add_argument('path_to_reduce_files', type=int, help='\
-    The transition file for the conversion (format: <old_categ> <new_categ>\\n).')
+    parser.add_argument('path_to_reduce_files', help='\
+    The path to the directory with the transition files for the conversion (transition.txt format: <old_categ> <new_categ>\\n).')
     
     return parser.parse_args()
     
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     
     # Transition matrix
     new_categs = [-1] * 256
-    new_categs_lines = [line.rstrip('\n').split() for line in open(args.transition_txtfile)]
+    new_categs_lines = [line.rstrip('\n').split() for line in open(transition_path)]
     for transition in new_categs_lines:
         new_categs[int(transition[0])] = int(transition[1])
     while new_categs[-1] == -1: new_categs.pop()
@@ -86,9 +86,8 @@ if __name__ == "__main__":
         with io.FileIO(anns_dest_path, "a") as file:
             file.write('\n'.join(annotation_unsplit))
     
-    if os.path.isfile(os.path.join(os.path.dirname(args.transition_txtfile), "categories.txt")):
-        shutil.copy2(os.path.join(os.path.dirname(args.transition_txtfile), "categories.txt"), 
-                     os.path.join(args.dataset_dest, "infos"))
+    if os.path.isfile(categories_path):
+        shutil.copy2(transition_path, os.path.join(args.dataset_dest, "infos"))
         
     raise SystemExit
     

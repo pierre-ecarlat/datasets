@@ -70,6 +70,8 @@ if __name__ == "__main__":
         if not (os.path.isfile(image_path) and os.path.isfile(annotation_path)):
           continue
         
+        cv2.namedWindow('input')
+        cv2.moveWindow('input', 0, 0)
         image = cv2.imread(image_path)
         annotation = [line.rstrip('\n').split() for line in open(annotation_path)]
         for box in annotation:
@@ -78,7 +80,7 @@ if __name__ == "__main__":
             cv2.putText(image, categories[box[0]-1], (box[1],box[2]+15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, colors[box[0]-1], 1)
         
         while (1):
-            visu = cv2.imshow(image_name, image)
+            visu = cv2.imshow('input', image)
             k = cv2.waitKey(0)
             if k != 27 and k != 83 and k != 81: # Esc & right & left
                 continue
