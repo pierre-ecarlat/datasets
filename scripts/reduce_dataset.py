@@ -2,7 +2,7 @@
 
 """
 Reduces the dataset to one with a lower number of categories. Example of use:
-python reduce_dataset.py Foodinc Foodinc_reduced transition.txt
+python reduce_dataset.py Foodinc Foodinc_reduced directory/where/is/transition.txt
 """
 
 # Auto-generated python class for protobuf formats

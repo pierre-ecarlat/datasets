@@ -29,7 +29,7 @@ ORIG="$MAIN/datasets_orig"
 DATASET_ORIG_DIR=$ORIG/$DATASET_NAME
 DATASET_CONV_DIR=$MAIN/$DATASET_NAME
 
-LINK_TO=("/home/pierre/projects/food_detection/py-faster-rcnn/data/")
+LINK_TO=("")
 
 
 ##############################################
@@ -54,7 +54,6 @@ else
         exit
     fi
 fi
-
 
 ##############################################
 # Convert it
