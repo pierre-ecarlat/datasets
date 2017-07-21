@@ -1,10 +1,7 @@
 *
 !.gitignore
 !README.md
-!TODO.md
 !builders/
 !builders/**
 !scripts/
 !scripts/**
-!datasets_orig/
-!datasets_orig/**

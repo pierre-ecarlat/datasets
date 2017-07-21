@@ -1,5 +1,6 @@
 #!/bin/bash
-# Expected format bash download.sh path/where/to/store
+# Expected format 
+# ./builders/VOC2007/download.sh VOC2007
 
 ##############################################
 # Arguments
@@ -20,13 +21,13 @@ OUTPUT=$1
 
 ##############################################
 # Main
-
 if [ ! -d $OUTPUT ]; then
   mkdir -p $OUTPUT;
 fi
 
 TMP_DIR=`date +%d%H%M%S`
-mkdir $TMP_DIR && cd $TMP_DIR
+mkdir $TMP_DIR
+cd $TMP_DIR
 
 echo "Download archives..."
 wget http://host.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtrainval_06-Nov-2007.tar

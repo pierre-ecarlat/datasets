@@ -1,5 +1,6 @@
 #!/bin/bash
-# Expected format bash convert.sh path/to/dataset path/to/converted_dataset
+# Expected format
+# ./builders/VOC2007/convert_to_fincFormat.sh VOC2007 false
 
 ##############################################
 # Arguments
@@ -12,13 +13,18 @@ elif [ $# -gt $NB_ARGUMENTS ]; then
   exit 2
 fi
 
+
 ##############################################
 # General variables
-ROOT="$EUID"
 DATASET_DIR=$1
-DATASET_OUTPUT_DIR=$2
-BUILDERS=$DATASET_OUTPUT_DIR/../builders
+DUPLICATE=$2
+FORMAT_NAME="fincFormat"
+
+DATASET_OUTPUT_DIR=$DATASET_DIR"_"$FORMAT_NAME
+# TODO: relative path vvvv
+BUILDERS=$DATASET_DIR/../builders
 NB_CATEGORIES=20
+IMAGE_EXTENSION="jpg" # jpg / png supported
 
 
 ##############################################
@@ -30,16 +36,31 @@ fi
 
 
 ##############################################
-# Main
+# Requirements
 if [ -d $DATASET_OUTPUT_DIR ]; then
-  rm -r $DATASET_OUTPUT_DIR
+    echo "The converted dataset $DATASET_OUTPUT_DIR already exists. No need " \
+    "to convert it again."
+    echo "> If you want to re-download it, simply remove $DATASET_OUTPUT_DIR."
+    exit 1
+fi
+if [ ! -f $BUILDERS/VOC2007/categories.txt ]; then
+    echo "The conversion require a file $BUILDERS/VOC2007/categories.txt."
+    exit 1
 fi
 
+
+##############################################
+# Preparation
+echo "-------------------------------------------"
+echo "Create the $DATASET_OUTPUT_DIR directory."
 mkdir -m 755 $DATASET_OUTPUT_DIR
 mkdir $DATASET_OUTPUT_DIR/Annotations
 mkdir $DATASET_OUTPUT_DIR/Images
 mkdir $DATASET_OUTPUT_DIR/ImageSets
 
+
+##############################################
+# Convert images one by one
 count=1
 NB_IMAGES=$(find $DATASET_DIR/VOC2007/JPEGImages -type f | wc -l)
 CATEGORIES=(`cat $BUILDERS/VOC2007/categories.txt`)
@@ -48,9 +69,9 @@ for image in $DATASET_DIR/VOC2007/JPEGImages/*.jpg; do
   
   image_base=$(basename ${image})
   
-  mogrify -format png $image
-  mv "${image%.*}.png" $DATASET_OUTPUT_DIR/Images/
-  # if --clean; then rm $image; fi
+  if [ "$IMAGE_EXTENSION" = "png" ]; then mogrify -format png $image; fi
+  mv "${image%.*}."$IMAGE_EXTENSION $DATASET_OUTPUT_DIR/Images/
+  if [ "$DUPLICATE" = false ]; then rm $image; fi
   
   objects=$(xml_grep 'object' $DATASET_DIR/VOC2007/Annotations/"${image_base%.*}.xml")
   names=($(echo $objects | xml_grep 'name' --text_only))
@@ -67,13 +88,18 @@ for image in $DATASET_DIR/VOC2007/JPEGImages/*.jpg; do
     annotation="$class ${xmins[$i]} ${ymins[$i]} ${xmaxs[$i]} ${ymaxs[$i]}"
     echo $annotation >> $DATASET_OUTPUT_DIR/Annotations/"${image_base%.*}.txt"
   done
-  # if --clean; then rm "${image_base%.*}.xml"; fi
+  if [ "$DUPLICATE" = false ]; then rm "${image_base%.*}.xml"; fi
   
   count=$((count+1))
 done
 
+
+##############################################
+# TODO: transfer the lists
+
+
+##############################################
+# Clean up
 chmod -R 755 $DATASET_OUTPUT_DIR
-# if --clean; then rm -r $DATASET_DIR; fi
-
-
+if [ "$DUPLICATE" = false ]; then rm $DATASET_DIR; fi
 

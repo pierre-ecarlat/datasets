@@ -1,5 +1,6 @@
 #!/bin/bash
-# Expected format bash download.sh path/where/to/store
+# Expected format 
+# ./builders/UECFOOD256/download.sh UECFOOD256
 
 ##############################################
 # Arguments
@@ -15,32 +16,29 @@ fi
 
 ##############################################
 # General variables
-PWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-OUTPUT=$(readlink -f $1)
-MAIN=$(readlink -m $OUTPUT/../..)
-BUILDER=$MAIN/builders/${OUTPUT##*/}
-TMP_DIR=$PWD/$(date +%d%H%M%S)
+OUTPUT=$1
 
 
 ##############################################
 # Main
-
 if [ ! -d $OUTPUT ]; then
   mkdir -p $OUTPUT;
 fi
 
-mkdir $TMP_DIR && cd $TMP_DIR
+TMP_DIR=`date +%d%H%M%S`
+mkdir $TMP_DIR
+cd $TMP_DIR
 
 echo "Download archives..."
 wget http://foodcam.mobi/dataset256.zip
 
 echo "Extract archives..."
-unzip dataset256.zip -d Food256
+unzip dataset256.zip
 
 echo "Move the dataset to the output directory"
-mv $TMP_DIR/Food256/UECFOOD256/* $OUTPUT
+mv UECFOOD256/* $OUTPUT
 
-cd $PWD
+cd -
 rm -r $TMP_DIR
 
 

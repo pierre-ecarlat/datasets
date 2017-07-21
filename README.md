@@ -1,43 +1,24 @@
-This directory groups all the scripts I use for downloading / convert the datasets used in my projects. Also permit to generate some files (train / test for CNN, colors for a given number of classes, etc.).
-
-# Getting started
+This project contains all the scripts I use for downloading / converting / manipulating / analyzing datasets. Most of them have been written to be generic, but are still quite high level, so any uncommon use may work, but there is no guarantee. These datasets are used in my projects, see the other repositories for some example of use.
 
 ## Requirements
-
+```shell
+$ apt install xml-twig-tools 
 ```
-apt install xml-twig-tools
+Note1: the conversion into tfRecords require -obviously- Tensorflow.
+Note2: may not be all.
+
+## Repo architecture
+```
+|-- _builders
+    |-- _DATASET_1
+        |-- [scripts specific to DATASET_1]
+    |-- _DATASET_2
+    |-- _DATASET_n
+|-- _scripts
+    |-- [generic scripts (supposed to work for any dataset)]
 ```
 
-## Instructions
-
-To download a dataset, simply do:
-```
-bash scripts/get_.sh DATASET_NAME
-```
-
-
-# Datasets
-
-## Format
-
-After using get_.sh, the dataset will be in the main directory, respecting the following architecture:
-```
-|-- _Images
-    |-- image_n.png
-|-- _Annotations
-    |-- annotation_n.txt
-|-- _ImageSets
-    |-- trainval.txt / test.txt / all.txt
-|-- _infos
-    |-- categories.txt
-    |-- colors.txt
-```
-The original dataset will be in "orig_datasets", except if you use the "--clean" argument to save place (not implemented yet).
-
-The images are all in the png format. The annotations are all in the txt format, with the following informations: "class xmin ymin xmax ymax" (multilines if multiple boxes). The class number starts from 1 to NB_OF_CATEGORIES (included). 0 may be used for the background class (not included in NB_OF_CATEGORIES).
-
-# Available datasets
-
+## Current datasets
 * [VOC2007](http://host.robots.ox.ac.uk/pascal/VOC/voc2007/)
 * [UECFOOD100](http://foodcam.mobi/dataset100.html)
 * [UECFOOD256](http://foodcam.mobi/dataset256.html)
