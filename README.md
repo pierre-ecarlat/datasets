@@ -1,4 +1,6 @@
 This project contains all the scripts I use for downloading / converting / manipulating / analyzing datasets. Most of them have been written to be generic, but are still quite high level, so any uncommon use may work, but there is no guarantee. These datasets are used in my projects, see the other repositories for some example of use.
+[Quite important notice]: there is no rollback on the scripts, so it's always better to use the duplicate option / do a backup.
+
 
 ## Requirements
 ```shell
@@ -6,6 +8,7 @@ $ apt install xml-twig-tools
 ```
 Note1: the conversion into tfRecords require -obviously- Tensorflow.
 Note2: may not be all.
+
 
 ## Repo architecture
 ```
@@ -17,6 +20,7 @@ Note2: may not be all.
 |-- _scripts
     |-- [generic scripts (supposed to work for any dataset)]
 ```
+Add your new dataset by adding its builders, the generic should still be usable.
 
 
 ## Current formats
@@ -66,6 +70,8 @@ Common format for [tensorlow](tensorflow.org).
 |-- DATASET_NAME_val.tfrecord
 |-- DATASET_NAME_trainval.tfrecord
 |-- DATASET_NAME_test.tfrecord
+|-- _infos
+    |-- label_map.pbtxt
 ```
 Usually stores the image size, filename, bounding boxes, classes under the following labels:
 ```

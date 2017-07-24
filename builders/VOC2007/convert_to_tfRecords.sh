@@ -19,13 +19,16 @@ fi
 DATASET_DIR=$1
 DUPLICATE=$2
 FORMAT_NAME="tfRecords"
-
-DATASET_OUTPUT_DIR=$DATASET_DIR"_"$FORMAT_NAME
 # TODO: relative path vvvv
 BUILDERS=$DATASET_DIR/../builders
-NB_CATEGORIES=20
-IMAGE_EXTENSION="jpg" # jpg / png supported
 
+IMAGES_DIR=$DATASET_DIR"/VOC2007/JPEGImages"
+ANNOTATIONS_DIR=$DATASET_DIR"/VOC2007/Annotations"
+IMAGESETS_DIR=$DATASET_DIR"/VOC2007/ImageSets/Main"
+NB_CATEGORIES=20
+
+DATASET_OUTPUT_DIR=$DATASET_DIR"_"$FORMAT_NAME
+IMAGE_EXTENSION="jpg" # jpg / png supported
 
 ##############################################
 # Invalid conditions
@@ -47,6 +50,31 @@ if [ ! -f $BUILDERS/VOC2007/label_map.pbtxt ]; then
     echo "The conversion require a file $BUILDERS/VOC2007/label_map.pbtxt."
     exit 1
 fi
+INSTALLATION_URL="https://github.com/tensorflow/models/blob/master/object_detection/g3doc/installation.md"
+echo "This conversion method require the object detection model utils " \
+     "from the tensorflow models. Current PYTHONPATH:"
+echo "> "$PYTHONPATH
+if [[ $PYTHONPATH == *"models"* ]]; then
+  echo "Found something that should be that. If it doesn't work, please check " \
+       "the installation procedure here: $INSTALLATION_URL"
+else
+  echo "You apparently don't have the object_detection utils in your PYTHONPATH. " \
+       "Please check the installation procedure here: $INSTALLATION_URL."
+  echo "My guess would be the following command:"
+  LOC=`(locate -e models/object_detection/ | head -n 1)`
+  PYPATH=${LOC%"models"*}"models"
+  echo "export PYTHONPATH=\$PYTHONPATH:"$PYPATH""
+  read -p "Try that? [Y/n] " -r
+  if [[ $REPLY =~ ^[Nn]$ ]]; then
+    exit 1
+  fi
+
+  export_me_that() {
+    export PYTHONPATH=$PYTHONPATH:$PYPATH
+  }
+  export_me_that
+fi
+
 
 
 ##############################################
@@ -54,19 +82,25 @@ fi
 echo "-------------------------------------------"
 echo "Create the $DATASET_OUTPUT_DIR directory."
 mkdir -m 755 $DATASET_OUTPUT_DIR
+mkdir $DATASET_OUTPUT_DIR/infos
 
 
 ##############################################
 # Conversion
-declare -a SETS=("train", "val", "trainval", "test")
+SETS=("train" "val" "trainval" "test")
 
-for i in "${SETS[@]}"; do
+for i in "${!SETS[@]}"; do
   python $BUILDERS/VOC2007/create_tf_records.py \
                   --data_dir $DATASET_DIR \
-                  --set ${arr[i]} \
-                  --output_path $DATASET_OUTPUT_DIR \
+                  --set ${SETS[$i]} \
+                  --output_path $DATASET_OUTPUT_DIR/VOC2007_${SETS[$i]}.tfrecord \
                   --label_map_path $BUILDERS/VOC2007/label_map.pbtxt
 done
+
+
+##############################################
+# Transfer the lists
+cp $BUILDERS/VOC2007/label_map.pbtxt $DATASET_OUTPUT_DIR/infos/
 
 
 ##############################################

@@ -142,7 +142,7 @@ def main(_):
     raise ValueError('set must be in : {}'.format(SETS))
   if FLAGS.year not in YEARS:
     raise ValueError('year must be in : {}'.format(YEARS))
-
+  
   data_dir = FLAGS.data_dir
   years = ['VOC2007', 'VOC2012']
   if FLAGS.year != 'merged':
@@ -175,4 +175,5 @@ def main(_):
 
 
 if __name__ == '__main__':
-tf.app.run()
+  tf.app.run()
+

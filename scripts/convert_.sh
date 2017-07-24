@@ -27,7 +27,7 @@ fi
 
 ##############################################
 # General variables
-DATASET_NAME=$1
+DATASET_NAME=`(basename $1)`
 FORMAT_NAME=$2
 
 ROOT="$EUID"
@@ -45,7 +45,7 @@ if [ ! -d $DATASET_DIR ]; then
     echo "The dataset $DATASET_NAME doesn't exist. Please download it first."
     exit 1
 fi
-if [ -f $BUILDERS/$DATASET_NAME/convert_to_$FORMAT_NAME.sh ]; then
+if [ ! -f $BUILDERS/$DATASET_NAME/convert_to_$FORMAT_NAME.sh ]; then
     echo -e "The dataset $DATASET_NAME doesn't have conversion instructions " \
     "for the format $FORMAT_NAME."
     "Please add a convert_to_$FORMAT_NAME.sh script in the builders."
@@ -57,5 +57,16 @@ fi
 # Download the raw dataset
 echo "Convert the dataset $DATASET_NAME to the $FORMAT_NAME format " \
 "(Duplicate? $DUPLICATE) ..."
-bash $BUILDERS/$DATASET_NAME/convert_to_$FORMAT_NAME.sh $DATASET_DIR $DUPLICATE
+if [ "$DUPLICATE" = "false" ]; then
+  echo "This operation will erase the current dataset to replace it by the " \
+          "converted new one (may lose some data depending on the conversion). " \
+          "(If you have enough place on your computer, consider the -d option)."
+  read -p "Pursue anyway? [y/N] " -r
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "Let's convert!"
+  else
+    exit 1
+  fi
+fi
 
+bash $BUILDERS/$DATASET_NAME/convert_to_$FORMAT_NAME.sh $DATASET_DIR $DUPLICATE
