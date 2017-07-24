@@ -43,10 +43,6 @@ if [ -d $DATASET_OUTPUT_DIR ]; then
     echo "> If you want to re-download it, simply remove $DATASET_OUTPUT_DIR."
     exit 1
 fi
-if [ ! -f $BUILDERS/UECFOOD256/categories.txt ]; then
-    echo "The conversion require a file $BUILDERS/UECFOOD256/categories.txt."
-    exit 1
-fi
 
 
 ##############################################

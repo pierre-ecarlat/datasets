@@ -19,11 +19,14 @@ fi
 DATASET_DIR=$1
 DUPLICATE=$2
 FORMAT_NAME="fincFormat"
-
-DATASET_OUTPUT_DIR=$DATASET_DIR"_"$FORMAT_NAME
 # TODO: relative path vvvv
 BUILDERS=$DATASET_DIR/../builders
+
+IMAGES_DIR=$DATASET_DIR"/VOC2007/JPEGImages"
+ANNOTATIONS_DIR=$DATASET_DIR"/VOC2007/Annotations"
 NB_CATEGORIES=20
+
+DATASET_OUTPUT_DIR=$DATASET_DIR"_"$FORMAT_NAME
 IMAGE_EXTENSION="jpg" # jpg / png supported
 
 
@@ -43,10 +46,6 @@ if [ -d $DATASET_OUTPUT_DIR ]; then
     echo "> If you want to re-download it, simply remove $DATASET_OUTPUT_DIR."
     exit 1
 fi
-if [ ! -f $BUILDERS/VOC2007/categories.txt ]; then
-    echo "The conversion require a file $BUILDERS/VOC2007/categories.txt."
-    exit 1
-fi
 
 
 ##############################################
@@ -62,18 +61,17 @@ mkdir $DATASET_OUTPUT_DIR/ImageSets
 ##############################################
 # Convert images one by one
 count=1
-NB_IMAGES=$(find $DATASET_DIR/VOC2007/JPEGImages -type f | wc -l)
-CATEGORIES=(`cat $BUILDERS/VOC2007/categories.txt`)
-for image in $DATASET_DIR/VOC2007/JPEGImages/*.jpg; do
+NB_IMAGES=$(find $IMAGES_DIR -type f | wc -l)
+for image in $IMAGES_DIR/*.jpg; do
   echo "Process image $count / $NB_IMAGES"
   
   image_base=$(basename ${image})
   
   if [ "$IMAGE_EXTENSION" = "png" ]; then mogrify -format png $image; fi
   mv "${image%.*}."$IMAGE_EXTENSION $DATASET_OUTPUT_DIR/Images/
-  if [ "$DUPLICATE" = false ]; then rm $image; fi
+  if [ "$DUPLICATE" = "false" ]; then rm $image; fi
   
-  objects=$(xml_grep 'object' $DATASET_DIR/VOC2007/Annotations/"${image_base%.*}.xml")
+  objects=$(xml_grep 'object' $ANNOTATIONS_DIR/"${image_base%.*}.xml")
   names=($(echo $objects | xml_grep 'name' --text_only))
   xmins=($(echo $objects | xml_grep 'xmin' --text_only))
   ymins=($(echo $objects | xml_grep 'ymin' --text_only))
@@ -88,7 +86,7 @@ for image in $DATASET_DIR/VOC2007/JPEGImages/*.jpg; do
     annotation="$class ${xmins[$i]} ${ymins[$i]} ${xmaxs[$i]} ${ymaxs[$i]}"
     echo $annotation >> $DATASET_OUTPUT_DIR/Annotations/"${image_base%.*}.txt"
   done
-  if [ "$DUPLICATE" = false ]; then rm "${image_base%.*}.xml"; fi
+  if [ "$DUPLICATE" = "false" ]; then rm "${image_base%.*}.xml"; fi
   
   count=$((count+1))
 done
@@ -101,5 +99,5 @@ done
 ##############################################
 # Clean up
 chmod -R 755 $DATASET_OUTPUT_DIR
-if [ "$DUPLICATE" = false ]; then rm $DATASET_DIR; fi
+if [ "$DUPLICATE" = "false" ]; then rm $DATASET_DIR; fi
 
