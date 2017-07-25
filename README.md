@@ -20,7 +20,9 @@ Note2: may not be all.
 # builders/VOC2007/reduction_to_4/transition.txt
 ./scripts/reduce_.sh VOC2007 4
 ```
-Note: The reduced dataset won't be conversible into any new format because it will require some builders in `builders/VOC2007_4C` (which doesn't exist). Fell free to create it if needed, or to rename the dataset to VOC2007 and, then, change the NB_CATEGORIES in the conversions scripts. This will be fixed soon, but the way to deal with different VOC (given the years, given the number of categories, etc) still has to be defined (and it starts to be too much for shell, should have switch to python a while ago).
+Note about the reduced dataset: it won't be conversible into any new format because it will require some builders in `builders/VOC2007_4C` (which doesn't exist). The best solution so far would be to create them (same as VOC2007 except the NB_CATEGORIES in the conversions scripts). This will be fixed soon, but the way to deal with different VOC (given the years, given the number of categories, etc) still has to be defined (and it starts to be too much for shell, should have switch to python a while ago).  
+Furthermore, the reduced dataset is mostly built with symbolic links (only the annotations differ), so check it twice before deleting the original dataset. This will also be fixed as soon as possible, to let the user chose if he wants to duplicate / replace / connect (with symbolic links) the dataset. But then, it may be better to have virtual dataset, this still have to be defined.  
+So far, only the fincFormat is supported. Because of the needed thinkings described above.
 
 
 ## Repo architecture
