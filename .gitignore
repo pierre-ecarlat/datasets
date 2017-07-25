@@ -1,7 +1,9 @@
 *
 !.gitignore
 !README.md
-!builders
-!scripts
+!builders/
+!scripts/
+!builders/**
+!scripts/**
 
 *.pyc
