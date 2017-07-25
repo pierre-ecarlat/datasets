@@ -19,8 +19,10 @@ fi
 DATASET_DIR=$1
 DUPLICATE=$2
 FORMAT_NAME="tfRecords"
-# TODO: relative path vvvv
-BUILDERS=$DATASET_DIR/../builders
+# TODO: relative paths vvvv
+ROOT=$DATASET_DIR/..
+BUILDERS=$ROOT/builders
+SCRIPTS=$ROOT/scripts
 
 IMAGES_DIR=$DATASET_DIR"/VOC2007/JPEGImages"
 ANNOTATIONS_DIR=$DATASET_DIR"/VOC2007/Annotations"
@@ -46,35 +48,15 @@ if [ -d $DATASET_OUTPUT_DIR ]; then
     echo "> If you want to re-download it, simply remove $DATASET_OUTPUT_DIR."
     exit 1
 fi
-if [ ! -f $BUILDERS/VOC2007/label_map.pbtxt ]; then
-    echo "The conversion require a file $BUILDERS/VOC2007/label_map.pbtxt."
+if [ ! -f $BUILDERS/VOC2007/categories.txt ]; then
+    echo "The conversion require the file $BUILDERS/VOC2007/categories.txt."
     exit 1
 fi
-INSTALLATION_URL="https://github.com/tensorflow/models/blob/master/object_detection/g3doc/installation.md"
-echo "This conversion method require the object detection model utils " \
-     "from the tensorflow models. Current PYTHONPATH:"
-echo "> "$PYTHONPATH
-if [[ $PYTHONPATH == *"models"* ]]; then
-  echo "Found something that should be that. If it doesn't work, please check " \
-       "the installation procedure here: $INSTALLATION_URL"
-else
-  echo "You apparently don't have the object_detection utils in your PYTHONPATH. " \
-       "Please check the installation procedure here: $INSTALLATION_URL."
-  echo "My guess would be the following command:"
-  LOC=`(locate -e models/object_detection/ | head -n 1)`
-  PYPATH=${LOC%"models"*}"models"
-  echo "export PYTHONPATH=\$PYTHONPATH:"$PYPATH""
-  read -p "Try that? [Y/n] " -r
-  if [[ $REPLY =~ ^[Nn]$ ]]; then
-    exit 1
-  fi
 
-  export_me_that() {
-    export PYTHONPATH=$PYTHONPATH:$PYPATH
-  }
-  export_me_that
-fi
-
+export_me_that() {
+  export PYTHONPATH=$PYTHONPATH:$SCRIPTS
+}
+export_me_that
 
 
 ##############################################
@@ -94,7 +76,7 @@ for i in "${!SETS[@]}"; do
                   --data_dir $DATASET_DIR \
                   --set ${SETS[$i]} \
                   --output_path $DATASET_OUTPUT_DIR/VOC2007_${SETS[$i]}.tfrecord \
-                  --label_map_path $BUILDERS/VOC2007/label_map.pbtxt
+                  --categories_path $BUILDERS/VOC2007/categories.txt
 done
 
 

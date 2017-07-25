@@ -1,5 +1,6 @@
 #!/bin/bash
-# Expected format bash download.sh path/where/to/store
+# Expected format 
+# ./builders/Foodinc/download.sh Foodinc
 
 ##############################################
 # Arguments
@@ -15,41 +16,67 @@ fi
 
 ##############################################
 # General variables
-PWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-OUTPUT=$(readlink -f $1)
-MAIN=$(readlink -m $OUTPUT/../..)
-BUILDER=$MAIN/builders/${OUTPUT##*/}
-TMP_DIR=$PWD/$(date +%d%H%M%S)
+OUTPUT=$1
+# TODO: relative paths vvvv
+ROOT=$OUTPUT/..
+BUILDERS=$ROOT/builders
+SCRIPTS=$ROOT/scripts
 
 
 ##############################################
 # Main
+if [ ! -d $OUTPUT ]; then
+  mkdir -p $OUTPUT;
+fi
 
-echo "Find the dataset txt file"
-max_dts_txt=0
-DATASET_TXTS=($(ls -1 $BUILDER/dataset_* | xargs -n1 basename | cut -d'_' -f2 | cut -d'.' -f1))
+TMP_DIR=`date +%d%H%M%S`
+mkdir $TMP_DIR
+cd $TMP_DIR
+
+echo "Find the dataset txt file to use (dataset_[number_images].txt)"
+MAX_VERSION=0
+DATASET_TXTS=($(ls -1 $BUILDERS/Foodinc/dataset_*.txt | # for all eligible files
+                xargs -n1 basename |                    # extract the name only
+                cut -d'_' -f2 |                         # extract the number only
+                cut -d'.' -f1))                         # remove extension
 for txt in ${DATASET_TXTS[@]}; do
-  if [[ $max_dts_txt -lt $txt ]]; then max_dts_txt=$txt; fi
+  if [[ $MAX_VERSION -lt $txt ]]; then MAX_VERSION=$txt; fi
 done
-if [ ! -f $BUILDER/dataset_$max_dts_txt.txt ]; then
+if [ ! -f $BUILDERS/Foodinc/dataset_$MAX_VERSION.txt ]; then
   echo "No dataset textfile, aborted."
   exit
 fi
 
 echo "Download images and create annotations"
-mkdir $TMP_DIR
-python $BUILDER/create_dataset.py $BUILDER/dataset_$max_dts_txt.txt $TMP_DIR/Foodinc
-if [ $(ls -p $TMP_DIR/Foodinc/Images/ | grep -v / | wc -l) -eq 0 ]; then
+export_me_that() {
+  export PYTHONPATH=$PYTHONPATH:$SCRIPTS
+}
+export_me_that
+python $BUILDERS/Foodinc/download_dataset.py \
+              $BUILDERS/Foodinc/dataset_$MAX_VERSION.txt \
+              Foodinc
+if [ $(ls -p Foodinc/Images/ | grep -v / | wc -l) -eq 0 ]; then
   echo "Failed to download the dataset..."
+  cd -
   rm -r $TMP_DIR
   exit
 fi
 
+cp $BUILDERS/Foodinc/categories.txt Foodinc/infos/
+if [ -f $BUILDERS/Foodinc/colors.txt ]; then
+  cp $BUILDERS/Foodinc/colors.txt Foodinc/infos/
+else
+  echo "No colors.txt found in the builders. Not mandatory, but may improve " \
+       "the visualization scripts (note: if you have the list of categories, you " \
+       "can generate the colors using scripts/generate_colors.py)."
+fi
+
 echo "Move the dataset to the output directory"
-if [ ! -d $OUTPUT ]; then
+if [ ! -d $Foodinc ]; then
   mkdir -p $OUTPUT;
 fi
-mv $TMP_DIR/Foodinc/* $OUTPUT
+mv Foodinc/* $OUTPUT
 
+cd -
 rm -r $TMP_DIR
 

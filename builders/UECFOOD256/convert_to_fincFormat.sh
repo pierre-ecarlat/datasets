@@ -19,11 +19,13 @@ fi
 DATASET_DIR=$1
 DUPLICATE=$2
 FORMAT_NAME="fincFormat"
+# TODO: relative paths vvvv
+ROOT=$DATASET_DIR/..
+BUILDERS=$ROOT/builders
+
+NB_CATEGORIES=256
 
 DATASET_OUTPUT_DIR=$DATASET_DIR"_"$FORMAT_NAME
-# TODO: relative path vvvv
-BUILDERS=$DATASET_DIR/../builders
-NB_CATEGORIES=256
 IMAGE_EXTENSION="jpg" # jpg / png supported
 
 
@@ -43,6 +45,10 @@ if [ -d $DATASET_OUTPUT_DIR ]; then
     echo "> If you want to re-download it, simply remove $DATASET_OUTPUT_DIR."
     exit 1
 fi
+if [ ! -f $BUILDERS/UECFOOD256/categories.txt ]; then
+  echo "The categories.txt file is needed in the builders."
+  exit 1
+fi
 
 
 ##############################################
@@ -53,19 +59,20 @@ mkdir -m 755 $DATASET_OUTPUT_DIR
 mkdir $DATASET_OUTPUT_DIR/Annotations
 mkdir $DATASET_OUTPUT_DIR/Images
 mkdir $DATASET_OUTPUT_DIR/ImageSets
+mkdir $DATASET_OUTPUT_DIR/infos
 
 
 ##############################################
 # Convert images one by one
 for i in `seq 1 $NB_CATEGORIES`; do
-  echo "Process category $i / $NB_CATEGORIES"
+  echo -ne "Process category $i / $NB_CATEGORIES\\r"
 
   SUB_DIR=$DATASET_DIR/$i
   for image in $SUB_DIR/*.jpg; do
     if [ "$IMAGE_EXTENSION" = "png" ]; then 
       mogrify -format png $image
       mv "${image%.*}."$IMAGE_EXTENSION $DATASET_OUTPUT_DIR/Images/
-    else; then 
+    else 
       cp $image $DATASET_OUTPUT_DIR/Images/
     fi
     if [ "$DUPLICATE" = false ]; then rm $image; fi
@@ -88,10 +95,19 @@ for i in `seq 1 $NB_CATEGORIES`; do
   done <$SUB_DIR/bb_info.txt
   if [ "$DUPLICATE" = false ]; then rm -r $SUB_DIR; fi
 done
+echo
 
 
 ##############################################
 # TODO: transfer the lists
+cp $BUILDERS/UECFOOF256/categories.txt $DATASET_OUTPUT_DIR/infos/
+if [ -f $BUILDERS/UECFOOF256/colors.txt ]; then
+  cp $BUILDERS/UECFOOF256/colors.txt $DATASET_OUTPUT_DIR/infos/
+else
+  echo "No colors.txt found in the builders. Not mandatory, but may improve " \
+       "the visualization scripts (note: if you have the list of categories, you " \
+       "can generate the colors using scripts/generate_colors.py)."
+fi
 
 
 ##############################################

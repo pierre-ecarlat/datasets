@@ -19,8 +19,9 @@ fi
 DATASET_DIR=$1
 DUPLICATE=$2
 FORMAT_NAME="fincFormat"
-# TODO: relative path vvvv
-BUILDERS=$DATASET_DIR/../builders
+# TODO: relative paths vvvv
+ROOT=$DATASET_DIR/..
+BUILDERS=$ROOT/builders
 
 IMAGES_DIR=$DATASET_DIR"/VOC2007/JPEGImages"
 ANNOTATIONS_DIR=$DATASET_DIR"/VOC2007/Annotations"
@@ -76,11 +77,10 @@ for image in $IMAGES_DIR/*.jpg; do
   if [ "$IMAGE_EXTENSION" = "png" ]; then 
     mogrify -format png $image
     mv "${image%.*}.png" $DATASET_OUTPUT_DIR/Images/
-    if [ "$DUPLICATE" = "false" ]; then rm $image; fi
   else
-    if [ "$DUPLICATE" = "false" ]; then mv $image $DATASET_OUTPUT_DIR/Images/
-    else cp $image $DATASET_OUTPUT_DIR/Images/; fi
+    cp $image $DATASET_OUTPUT_DIR/Images/
   fi
+  if [ "$DUPLICATE" = "false" ]; then rm $image; fi
   
   objects=$(xml_grep 'object' $ANNOTATIONS_DIR/"${image_base%.*}.xml")
   names=($(echo $objects | xml_grep 'name' --text_only))

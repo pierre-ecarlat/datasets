@@ -10,6 +10,19 @@ Note1: the conversion into tfRecords require -obviously- Tensorflow.
 Note2: may not be all.
 
 
+## Possible use
+```shell
+# Download VOC2007
+$ ./scripts/download_.sh VOC2007
+# Convert the dataset into tfRecords
+$ ./scripts/convert_.sh VOC2007 tfRecords
+# Reduced it to a 4-categories dataset following the transition map in 
+# builders/VOC2007/reduction_to_4/transition.txt
+$ ./scripts/reduce_.sh VOC2007 4
+```
+Note: The reduced dataset won't be conversible into any new format because it will require some builders in `builders/VOC2007_4C` (which doesn't exist). Fell free to create it if needed, or to rename the dataset to VOC2007 and, then, change the NB_CATEGORIES in the conversions scripts. This will be fixed soon, but the way to deal with different VOC (given the years, given the number of categories, etc) still has to be defined (and it starts to be too much for shell, should have switch to python a while ago).
+
+
 ## Repo architecture
 ```
 |-- _builders

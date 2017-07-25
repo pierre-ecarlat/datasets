@@ -19,6 +19,9 @@ Example usage:
         --year=VOC2012 \
         --output_path=/home/user/pascal.record
 """
+
+"""Slightly modified from the original version"""
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -32,8 +35,7 @@ from lxml import etree
 import PIL.Image
 import tensorflow as tf
 
-from object_detection.utils import dataset_util
-from object_detection.utils import label_map_util
+from utils import dataset_util
 
 
 flags = tf.app.flags
@@ -44,8 +46,8 @@ flags.DEFINE_string('annotations_dir', 'Annotations',
                     '(Relative) path to annotations directory.')
 flags.DEFINE_string('year', 'VOC2007', 'Desired challenge year.')
 flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
-flags.DEFINE_string('label_map_path', 'data/pascal_label_map.pbtxt',
-                    'Path to label map proto')
+flags.DEFINE_string('categories_path', 'data/categories.txt',
+                    'Path to the list of categories')
 flags.DEFINE_boolean('ignore_difficult_instances', False, 'Whether to ignore '
                      'difficult instances')
 FLAGS = flags.FLAGS
@@ -56,7 +58,7 @@ YEARS = ['VOC2007', 'VOC2012', 'merged']
 
 def dict_to_tf_example(data,
                        dataset_directory,
-                       label_map_dict,
+                       categories_dict,
                        ignore_difficult_instances=False,
                        image_subdirectory='JPEGImages'):
   """Convert XML derived dict to tf.Example proto.
@@ -110,7 +112,7 @@ def dict_to_tf_example(data,
     xmax.append(float(obj['bndbox']['xmax']) / width)
     ymax.append(float(obj['bndbox']['ymax']) / height)
     classes_text.append(obj['name'].encode('utf8'))
-    classes.append(label_map_dict[obj['name']])
+    classes.append(categories_dict[obj['name']])
     truncated.append(int(obj['truncated']))
     poses.append(obj['pose'].encode('utf8'))
 
@@ -150,7 +152,8 @@ def main(_):
 
   writer = tf.python_io.TFRecordWriter(FLAGS.output_path)
 
-  label_map_dict = label_map_util.get_label_map_dict(FLAGS.label_map_path)
+  categories = [line.rstrip('\n') for line in open(FLAGS.categories_path)]
+  categories_dict = { categ_name: idx for idx, categ_name in enumerate(categories) }
 
   for year in years:
     logging.info('Reading from PASCAL %s dataset.', year)
@@ -167,7 +170,7 @@ def main(_):
       xml = etree.fromstring(xml_str)
       data = dataset_util.recursive_parse_xml_to_dict(xml)['annotation']
 
-      tf_example = dict_to_tf_example(data, FLAGS.data_dir, label_map_dict,
+      tf_example = dict_to_tf_example(data, FLAGS.data_dir, categories_dict,
                                       FLAGS.ignore_difficult_instances)
       writer.write(tf_example.SerializeToString())
 
