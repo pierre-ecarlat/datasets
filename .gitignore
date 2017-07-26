@@ -1,3 +1,4 @@
+# TODO: this is a mess..
 *
 !.gitignore
 !README.md
@@ -6,4 +7,5 @@
 !builders/**
 !scripts/**
 
+!*.sh
 *.pyc

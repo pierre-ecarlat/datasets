@@ -109,6 +109,10 @@ else
        "can generate the colors using scripts/generate_colors.py)."
 fi
 
+##############################################
+# Sign
+echo "fincFormat" > $DATASET_OUTPUT_DIR/.format
+
 
 ##############################################
 # Clean up

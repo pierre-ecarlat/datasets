@@ -13,12 +13,12 @@ Note2: may not be all.
 ## Possible use
 ```shell
 # Download VOC2007
-./scripts/download_.sh VOC2007
+./download_.sh VOC2007
 # Convert the dataset into tfRecords
-./scripts/convert_.sh VOC2007 tfRecords
+./convert_.sh VOC2007 tfRecords
 # Reduced it to a 4-categories dataset following the transition map in 
 # builders/VOC2007/reduction_to_4/transition.txt
-./scripts/reduce_.sh VOC2007 4
+./reduce_.sh VOC2007 4 builders/VOC2007/categories.txt
 ```
 Note about the reduced dataset: it won't be conversible into any new format because it will require some builders in `builders/VOC2007_4C` (which doesn't exist). The best solution so far would be to create them (same as VOC2007 except the NB_CATEGORIES in the conversions scripts). This will be fixed soon, but the way to deal with different VOC (given the years, given the number of categories, etc) still has to be defined (and it starts to be too much for shell, should have switch to python a while ago).  
 Furthermore, the reduced dataset is mostly built with symbolic links (only the annotations differ), so check it twice before deleting the original dataset. This will also be fixed as soon as possible, to let the user chose if he wants to duplicate / replace / connect (with symbolic links) the dataset. But then, it may be better to have virtual dataset, this still have to be defined.  
@@ -39,6 +39,8 @@ Add your new dataset by adding its builders, the generic should still be usable.
 
 
 ## Current formats
+Each dataset has a `.format` signature, containing the name of its format (to know how to process it).
+
 ### vocFormat
 Used for the [ILSVRC](http://www.image-net.org/challenges/LSVRC/) challenge.
 ```
@@ -50,11 +52,8 @@ Used for the [ILSVRC](http://www.image-net.org/challenges/LSVRC/) challenge.
     |-- _ImageSets
         |-- _Main
             |-- trainval.txt / test.txt / all.txt
-    |-- _infos
-        |-- categories.txt
-        |-- colors.txt
 ```
-Image sets are list of the image names (no extension).
+Image sets are list of the image names (no extension).  
 Annotations are written in the following format:
 ```xml
 <annotation>
@@ -117,12 +116,17 @@ Used by [FiNC](https://finc.com/).
     |-- categories.txt
     |-- colors.txt
 ```
-Image sets are list of the image names (no extension).
+Image sets are list of the image names (no extension).  
 Annotations are written in the following format:
 ```
 CLS X1 X2 Y1 Y2
 ```
 With one bounding box per line, and the classes going from 1 to NB_CLASS (0 is let free for the background).
+
+
+### uecFormat
+Format from the [UECFOOD](http://foodcam.mobi/index.html) serie.  
+Not supported.
 
 
 ## Current datasets

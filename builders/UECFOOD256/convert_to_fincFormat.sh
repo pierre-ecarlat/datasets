@@ -99,7 +99,7 @@ echo
 
 
 ##############################################
-# TODO: transfer the lists
+# Transfer the lists
 cp $BUILDERS/UECFOOF256/categories.txt $DATASET_OUTPUT_DIR/infos/
 if [ -f $BUILDERS/UECFOOF256/colors.txt ]; then
   cp $BUILDERS/UECFOOF256/colors.txt $DATASET_OUTPUT_DIR/infos/
@@ -108,6 +108,10 @@ else
        "the visualization scripts (note: if you have the list of categories, you " \
        "can generate the colors using scripts/generate_colors.py)."
 fi
+
+##############################################
+# Sign
+echo "fincFormat" > $DATASET_OUTPUT_DIR/.format
 
 
 ##############################################

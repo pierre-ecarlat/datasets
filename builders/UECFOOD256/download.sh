@@ -38,6 +38,9 @@ unzip dataset256.zip
 echo "Move the dataset to the output directory"
 mv UECFOOD256/* $OUTPUT
 
+echo "Sign the dataset"
+echo "uecFormat" > UECFOOD256/.format
+
 cd -
 rm -r $TMP_DIR
 

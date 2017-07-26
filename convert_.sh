@@ -30,10 +30,8 @@ fi
 DATASET_NAME=`(basename $1)`
 FORMAT_NAME=$2
 
-ROOT="$EUID"
 PWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-MAIN=$(readlink -m $PWD/..)
+MAIN=$(readlink -m $PWD)
 BUILDERS="$MAIN/builders"
 
 DATASET_DIR=$MAIN/$DATASET_NAME

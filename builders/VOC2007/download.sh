@@ -39,6 +39,9 @@ tar xvf VOCtrainval_06-Nov-2007.tar
 tar xvf VOCtest_06-Nov-2007.tar
 tar xvf VOCdevkit_08-Jun-2007.tar
 
+echo "Sign the dataset"
+echo "vocFormat" > VOCdevkit/.format
+
 echo "Move the dataset to the output directory"
 mv VOCdevkit/* $OUTPUT
 

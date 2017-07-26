@@ -86,6 +86,11 @@ cp $BUILDERS/VOC2007/label_map.pbtxt $DATASET_OUTPUT_DIR/infos/
 
 
 ##############################################
+# Sign
+echo "tfRecords" > $DATASET_OUTPUT_DIR/.format
+
+
+##############################################
 # Clean up
 chmod -R 755 $DATASET_OUTPUT_DIR
 if [ "$DUPLICATE" = false ]; then rm $DATASET_DIR; fi

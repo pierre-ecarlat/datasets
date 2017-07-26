@@ -125,6 +125,11 @@ else
 fi
 
 ##############################################
+# Sign
+echo "fincFormat" > $DATASET_OUTPUT_DIR/.format
+
+
+##############################################
 # Clean up
 chmod -R 755 $DATASET_OUTPUT_DIR
 if [ "$DUPLICATE" = "false" ]; then rm -r $DATASET_DIR; fi

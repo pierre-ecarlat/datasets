@@ -71,6 +71,9 @@ else
        "can generate the colors using scripts/generate_colors.py)."
 fi
 
+echo "Sign the dataset"
+echo "fincFormat" > Foodinc/.format
+
 echo "Move the dataset to the output directory"
 if [ ! -d $Foodinc ]; then
   mkdir -p $OUTPUT;

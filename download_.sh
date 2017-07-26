@@ -1,6 +1,6 @@
 #!/bin/bash
 # Expected format: 
-# ./scripts/download_.sh DATASET_NAME
+# ./download_.sh DATASET_NAME
 
 
 ##############################################
@@ -20,10 +20,8 @@ fi
 # General variables
 DATASET_NAME=$1
 
-ROOT="$EUID"
 PWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-MAIN=$(readlink -m $PWD/..)
+MAIN=$(readlink -m $PWD)
 BUILDERS="$MAIN/builders"
 
 DATASET_DIR=$MAIN/$DATASET_NAME
