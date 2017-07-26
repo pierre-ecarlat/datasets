@@ -1,52 +1,39 @@
 # Scripts
 
 ## Overview
-
+```python
+python scripts/compute_characteristics.py DATASET_NAME --list LIST_NAME
 ```
-bash scripts/get_.sh DATASET_NAME
-```
-Get the dataset DATASET_NAME; List of action:
-- Download the dataset and store it in MAIN_DIR/datasets_orig/DATASET_NAME/
-    > Uses MAIN/builders/DATASET_NAME/download.sh
-- Convert it into a basic format (see the 'datasets' section) and store it in MAIN_DIR/DATASET_NAME/
-    > Uses MAIN/builders/DATASET_NAME/convert.sh
-- Generate the colors for the categories in MAIN_DIR/DATASET_NAME/infos/colors.txt
-    > Uses MAIN/builders/DATASET_NAME/categories.txt
-- Generate the list of all the images, store it in MAIN_DIR/DATASET_NAME/ImageSets/all.txt
-- Generate the set lists (trainval, test), store it in MAIN_DIR/DATASET_NAME/ImageSets/
-- Create a symbolic link between the dataset directory to all the paths stored in $LINK_TO
-
-```
-python scripts/generate_lists.py DATASET_NAME PROPORTION
-```
-Generate the lists for the tranval and the test sets. Will create a 'caracteristics' directory into ImageSets/, and will use it to make sure that both sets have the same proportion (included between 0 and 1) of each class.
-
-```
-python scripts/reduce_dataset.py DATASET_NAME DATASET_REDUCED_NAME path/to/reducing/files
-```
-Reduce a dataset with high level category (white rice, crustacean, ...) into an lower one (with categories such as rice, fish, ...). Requires a transition file and a categories file in <path/to/reducing/files>. The transition file should list the categories to change (<old_categ_nb> <new_categ_nb>). See Foodinc/reduced_to_18/ directory for an example.
-
-```
-python scripts/compute_caracteristics.py DATASET_NAME --list LIST_NAME
-```
-Generate a folder into ImagSets including caracteristics of a set (all, trainval, test, ..):
+Generate a folder in the list's directory including some characteristics of a set (all, trainval, test, ..), such as:
 - the 'categories_idx_per_image.txt' (line x: xth image) <image_name> <bb1_categ> <bb2_categ> <..>
 - the 'nb_images_per_category' (line x = xth category): <nb_images>
 - the 'nb_images_with_x_boxes' (line x = x nb of box): <nb_images>
+`fincFormat` is the only supported format so far, this probably won't change.
 
-```
-bash scripts/generate_colors.sh DATASET_NAME NB_CATEG
-```
-Generate a color for each category (equally distributed over the color spectrum)
 
+```python
+python scripts/display_category.py DATASET_NAME CATEG
 ```
-bash scripts/display_dataset.sh DATASET_NAME
-```
-Visualize a dataset with its bounding boxes.
+Visualize all the boxes belonging to a category in a dataset (this crop the image for visualization).  
 
+
+```python
+python scripts/display_dataset.py DATASET_NAME
 ```
-bash scripts/display_category.sh DATASET_NAME
+Visualize a dataset with its bounding boxes.  
+Supports `fincFormat` and `vocFormat`.
+
+
+```python
+python scripts/generate_colors.sh NB_CATEGS OUTPUT_FILE
 ```
-Visualize the images for a category in a dataset with its bounding boxes.
+Generate a list of `nb_categs` colors (equally distributed over the color spectrum). The colors are RGB, following the "<R> <G> <B>" format, one color per line. Dataset independant.
+
+
+```python
+python scripts/generate_lists.sh DATASET_NAME --inp all --out1 trainval --out2 test
+```
+Generate sublists from an initial set (example: generates `trainval` and `test` from the `all` set (default)). The set is splitted into two separate sets, supposed to have, as much as possible, the same class repartition (in case of imbalanced datasets). Greedy algorithm, be tolerant.  
+If may also computes a characteristics folder in the lists' directory.
 
 

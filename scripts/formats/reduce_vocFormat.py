@@ -14,10 +14,6 @@ import shutil
 
 import xml.etree.ElementTree as ET
 
-# Extensions
-E_IMG = '.png'
-E_ANN = '.txt'
-
 
 def getArguments():
   """Defines and parses command-line arguments to this script."""

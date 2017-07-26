@@ -1,5 +1,5 @@
 This project contains all the scripts I use for downloading / converting / manipulating / analyzing datasets. Most of them have been written to be generic, but are still quite high level, so any uncommon use may work, but there is no guarantee. These datasets are used in my projects, see the other repositories for some example of use.  
-[Quite important notice]: there is no rollback on the scripts, so it's always better to use the duplicate option / do a backup.
+[Quite important notice]: there is no rollback on the scripts, so it's always better to use the duplicate option or to do a backup.
 
 
 ## Requirements
@@ -28,12 +28,12 @@ So far, only the fincFormat is supported. Because of the needed thinkings descri
 ## Repo architecture
 ```
 |-- _builders
-    |-- _DATASET_1
-        |-- [scripts specific to DATASET_1]
-    |-- _DATASET_2
-    |-- _DATASET_n
+  |-- _DATASET_1
+    |-- [scripts specific to DATASET_1]
+  |-- _DATASET_2
+  |-- _DATASET_n
 |-- _scripts
-    |-- [generic scripts (supposed to work for any dataset)]
+  |-- [generic scripts (supposed to work for any dataset)]
 ```
 Add your new dataset by adding its builders, the generic should still be usable.
 
@@ -45,34 +45,34 @@ Each dataset has a `.format` signature, containing the name of its format (to kn
 Used for the [ILSVRC](http://www.image-net.org/challenges/LSVRC/) challenge.
 ```
 |-- _VOC[year]
-    |-- _JPEGImages
-        |-- image_n.jpg
-    |-- _Annotations
-        |-- annotation_n.xml
-    |-- _ImageSets
-        |-- _Main
-            |-- trainval.txt / test.txt / all.txt
+  |-- _JPEGImages
+    |-- image_n.jpg
+  |-- _Annotations
+    |-- annotation_n.xml
+  |-- _ImageSets
+    |-- _Main
+      |-- trainval.txt / test.txt / all.txt
 ```
 Image sets are list of the image names (no extension).  
 Annotations are written in the following format:
 ```xml
 <annotation>
-	<folder>VOC[year]</folder>
-	<filename>[name].jpg</filename>
-	<size>
-		<width>600</width>
-		<height>800</height>
-		<depth>3</depth>
-	</size>
-	<object>
-		<name>pikachu</name>
-		<bndbox>
-			<xmin>50</xmin>
-			<ymin>30</ymin>
-			<xmax>360</xmax>
-			<ymax>280</ymax>
-		</bndbox>
-	</object>
+  <folder>VOC[year]</folder>
+  <filename>[name].jpg</filename>
+  <size>
+    <width>600</width>
+    <height>800</height>
+    <depth>3</depth>
+  </size>
+  <object>
+    <name>pikachu</name>
+    <bndbox>
+      <xmin>50</xmin>
+      <ymin>30</ymin>
+      <xmax>360</xmax>
+      <ymax>280</ymax>
+    </bndbox>
+  </object>
 </annotation>
 ```
 
@@ -107,14 +107,14 @@ But check the scripts to be sure, the details to save changed depending on the d
 Used by [FiNC](https://finc.com/).
 ```
 |-- _Images
-    |-- image_n.jpg
+  |-- image_n.jpg
 |-- _Annotations
-    |-- annotation_n.txt
+  |-- annotation_n.txt
 |-- _ImageSets
-    |-- trainval.txt / test.txt / all.txt
+  |-- trainval.txt / test.txt / all.txt
 |-- _infos
-    |-- categories.txt
-    |-- colors.txt
+  |-- categories.txt
+  |-- colors.txt
 ```
 Image sets are list of the image names (no extension).  
 Annotations are written in the following format:
