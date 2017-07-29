@@ -14,6 +14,9 @@ import cv2
 import urllib
 import numpy as np
 import os
+import time
+from socket import error as SocketError
+import errno
 
 from utils import timer_util
 
@@ -73,7 +76,21 @@ if __name__ == "__main__":
         file.write(details + "\n")
 
       # Load the image
-      image_url_response = urllib.urlopen(uri)
+      success = False
+      waiting_times = [1,1,1,5,5,5,30,60,120]
+      while not success:
+        try:
+          image_url_response = urllib.urlopen(uri)
+          success = True
+        except SocketError | IOError as e:
+          if len(waiting_times) > 0:
+            print "\nError , will try again in", waiting_times[0]
+            time.sleep(waiting_times[0])
+            waiting_times = waiting_times[1:]
+          else:
+            print "\nTime out. exit"
+            raise SystemExit
+
       image_array = np.array(bytearray(image_url_response.read()), dtype=np.uint8)
       image = cv2.imdecode(image_array, -1)
       if image is None:

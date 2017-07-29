@@ -4,10 +4,11 @@ This project contains all the scripts I use for downloading / converting / manip
 
 ## Requirements
 ```shell
-$ apt install xml-twig-tools 
+$ apt install xml-twig-tools  # For XML support (VOC format mostly) 
+$ pip install pandas          # For OpenImages support
 ```
-Note1: the conversion into tfRecords require -obviously- Tensorflow.  
-Note2: may not be all.
+Note1: the conversion into tfRecords require -obviously- Tensorflow, their [website](tensorflow.org) provides a complete detailed installation procedure.  
+Note2: this may not be all. I need to test them on an empty VM to be sure, should be done soon.
 
 
 ## Possible use
@@ -133,5 +134,6 @@ Not supported.
 * [VOC2007](http://host.robots.ox.ac.uk/pascal/VOC/voc2007/)
 * [UECFOOD100](http://foodcam.mobi/dataset100.html)
 * [UECFOOD256](http://foodcam.mobi/dataset256.html)
+* [OpenImages](https://github.com/openimages/dataset) - In progress
 * [Foodinc](https://finc.com/) - Private dataset (you won't be able to download the images)
 

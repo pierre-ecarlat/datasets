@@ -164,6 +164,11 @@ if __name__ == "__main__":
       print "Unknown format."
 
     for box in annotation:
+      if float(box[1]) < 1 and float(box[3]) <= 1:
+        box[1] = float(box[1]) * image.shape[1]
+        box[2] = float(box[2]) * image.shape[0]
+        box[3] = float(box[3]) * image.shape[1]
+        box[4] = float(box[4]) * image.shape[0]
       box = [int(b) for b in box]
       cv2.rectangle(image, (box[1],box[2]), (box[3],box[4]), colors[box[0]-1], 2)
       cv2.putText(image, categories[box[0]-1], (box[1],box[2]+15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, colors[box[0]-1], 1)

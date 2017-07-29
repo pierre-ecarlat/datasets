@@ -6,7 +6,7 @@
 ##############################################
 # Arguments
 NB_ARGUMENTS_MIN=1
-NB_ARGUMENTS_MAX=1
+NB_ARGUMENTS_MAX=2
 if [ $# -lt $NB_ARGUMENTS_MIN ]; then
   echo 1>&2 "$0: Not enough arguments."
   exit 2
@@ -19,6 +19,7 @@ fi
 ##############################################
 # General variables
 DATASET_NAME=$1
+EXTENSION=$2
 
 PWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 MAIN=$(readlink -m $PWD)
@@ -29,6 +30,7 @@ DATASET_DIR=$MAIN/$DATASET_NAME
 
 ##############################################
 # Requirements
+# TODO: Should deal with extensions
 if [ -d $DATASET_DIR ]; then
     echo "The dataset $DATASET_NAME already exists. No need to download it."
     echo "> If you want to re-download it, simply remove $DATASET_NAME."
@@ -42,14 +44,7 @@ fi
 
 
 ##############################################
-# Preparation
-echo "-------------------------------------------"
-echo "Create the $DATASET_DIR directory."
-mkdir $DATASET_DIR
-
-
-##############################################
 # Download the raw dataset
 echo "Download ..."
-bash $BUILDERS/$DATASET_NAME/download.sh $DATASET_DIR
+bash $BUILDERS/$DATASET_NAME/download.sh $DATASET_DIR $EXTENSION
 

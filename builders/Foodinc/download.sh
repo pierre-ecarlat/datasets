@@ -18,7 +18,7 @@ fi
 # General variables
 OUTPUT=$1
 # TODO: relative paths vvvv
-ROOT=$OUTPUT/..
+ROOT=${OUTPUT%/*}
 BUILDERS=$ROOT/builders
 SCRIPTS=$ROOT/scripts
 
