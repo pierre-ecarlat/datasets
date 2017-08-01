@@ -100,9 +100,9 @@ echo
 
 ##############################################
 # Transfer the lists
-cp $BUILDERS/UECFOOF256/categories.txt $DATASET_OUTPUT_DIR/infos/
-if [ -f $BUILDERS/UECFOOF256/colors.txt ]; then
-  cp $BUILDERS/UECFOOF256/colors.txt $DATASET_OUTPUT_DIR/infos/
+cp $BUILDERS/UECFOOD256/categories.txt $DATASET_OUTPUT_DIR/infos/
+if [ -f $BUILDERS/UECFOOD256/colors.txt ]; then
+  cp $BUILDERS/UECFOOD256/colors.txt $DATASET_OUTPUT_DIR/infos/
 else
   echo "No colors.txt found in the builders. Not mandatory, but may improve " \
        "the visualization scripts (note: if you have the list of categories, you " \

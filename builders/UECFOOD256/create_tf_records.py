@@ -30,6 +30,7 @@ import hashlib
 import io
 import logging
 import os
+import re
 
 from lxml import etree
 import PIL.Image
@@ -39,12 +40,13 @@ from utils import dataset_util
 
 
 flags = tf.app.flags
-flags.DEFINE_string('data_dir', '', 'Root directory to raw PASCAL VOC dataset.')
+flags.DEFINE_string('data_dir', '', 'Root directory to raw UECFOOD256 dataset.')
 flags.DEFINE_string('set', 'train', 'Convert training set, validation set or '
                     'merged set.')
+flags.DEFINE_string('images_dir', 'Images',
+                    '(Relative) path to images directory.')
 flags.DEFINE_string('annotations_dir', 'Annotations',
                     '(Relative) path to annotations directory.')
-flags.DEFINE_string('year', 'VOC2007', 'Desired challenge year.')
 flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
 flags.DEFINE_string('categories_path', 'data/categories.txt',
                     'Path to the list of categories')
@@ -53,14 +55,13 @@ flags.DEFINE_boolean('ignore_difficult_instances', False, 'Whether to ignore '
 FLAGS = flags.FLAGS
 
 SETS = ['train', 'val', 'trainval', 'test']
-YEARS = ['VOC2007', 'VOC2012', 'merged']
 
 
 def dict_to_tf_example(data,
                        dataset_directory,
-                       categories_dict,
+                       categories,
                        ignore_difficult_instances=False,
-                       image_subdirectory='JPEGImages'):
+                       image_subdirectory='Images'):
   """Convert XML derived dict to tf.Example proto.
   Notice that this function normalizes the bounding box coordinates provided
   by the raw data.
@@ -78,7 +79,7 @@ def dict_to_tf_example(data,
   Raises:
     ValueError: if the image pointed to by data['filename'] is not a valid JPEG
   """
-  img_path = os.path.join(data['folder'], image_subdirectory, data['filename'])
+  img_path = os.path.join(data['data_dir'], data['filename'])
   full_path = os.path.join(dataset_directory, img_path)
   with tf.gfile.GFile(full_path, 'rb') as fid:
     encoded_jpg = fid.read()
@@ -88,8 +89,8 @@ def dict_to_tf_example(data,
     raise ValueError('Image format not JPEG')
   key = hashlib.sha256(encoded_jpg).hexdigest()
 
-  width = int(data['size']['width'])
-  height = int(data['size']['height'])
+  # Image characteristics
+  width, height = PIL.Image.open(img_path).size
 
   xmin = []
   ymin = []
@@ -97,24 +98,13 @@ def dict_to_tf_example(data,
   ymax = []
   classes = []
   classes_text = []
-  truncated = []
-  poses = []
-  difficult_obj = []
-  for obj in data['object']:
-    difficult = bool(int(obj['difficult']))
-    if ignore_difficult_instances and difficult:
-      continue
-
-    difficult_obj.append(int(difficult))
-
-    xmin.append(float(obj['bndbox']['xmin']) / width)
-    ymin.append(float(obj['bndbox']['ymin']) / height)
-    xmax.append(float(obj['bndbox']['xmax']) / width)
-    ymax.append(float(obj['bndbox']['ymax']) / height)
-    classes_text.append(obj['name'].encode('utf8'))
-    classes.append(categories_dict[obj['name']])
-    truncated.append(int(obj['truncated']))
-    poses.append(obj['pose'].encode('utf8'))
+  for ix, obj in enumerate(data['bboxes']):
+    xmin.append(float(obj[0]) / width)
+    ymin.append(float(obj[1]) / height)
+    xmax.append(float(obj[2]) / width)
+    ymax.append(float(obj[3]) / height)
+    classes_text.append(categories[int(labels[ix])-1])
+    classes.append(int(labels[ix]))
 
   example = tf.train.Example(features=tf.train.Features(feature={
       'image/height': dataset_util.int64_feature(height),
@@ -132,9 +122,6 @@ def dict_to_tf_example(data,
       'image/object/bbox/ymax': dataset_util.float_list_feature(ymax),
       'image/object/class/text': dataset_util.bytes_list_feature(classes_text),
       'image/object/class/label': dataset_util.int64_list_feature(classes),
-      'image/object/difficult': dataset_util.int64_list_feature(difficult_obj),
-      'image/object/truncated': dataset_util.int64_list_feature(truncated),
-      'image/object/view': dataset_util.bytes_list_feature(poses),
   }))
   return example
 
@@ -142,37 +129,44 @@ def dict_to_tf_example(data,
 def main(_):
   if FLAGS.set not in SETS:
     raise ValueError('set must be in : {}'.format(SETS))
-  if FLAGS.year not in YEARS:
-    raise ValueError('year must be in : {}'.format(YEARS))
   
   data_dir = FLAGS.data_dir
-  years = ['VOC2007', 'VOC2012']
-  if FLAGS.year != 'merged':
-    years = [FLAGS.year]
 
   writer = tf.python_io.TFRecordWriter(FLAGS.output_path)
 
   categories = [line.rstrip('\n') for line in open(FLAGS.categories_path)]
-  categories_dict = { categ_name: idx for idx, categ_name in enumerate(categories) }
 
-  for year in years:
-    logging.info('Reading from PASCAL %s dataset.', year)
-    list_set_path = os.path.join(data_dir, year, 'ImageSets', 'Main',
-                                 FLAGS.set + '.txt')
-    annotations_dir = os.path.join(data_dir, year, FLAGS.annotations_dir)
-    list_set = dataset_util.read_examples_list(list_set_path)
-    for idx, example in enumerate(list_set):
-      if idx % 100 == 0:
-        logging.info('On image %d of %d', idx, len(list_set))
-      path = os.path.join(annotations_dir, example + '.xml')
-      with tf.gfile.GFile(path, 'r') as fid:
-        xml_str = fid.read()
-      xml = etree.fromstring(xml_str)
-      data = dataset_util.recursive_parse_xml_to_dict(xml)['annotation']
+  logging.info('Reading from UECFOOD256 dataset.')
+  list_set_path = os.path.join(data_dir, 'ImageSets', FLAGS.set + '.txt')
+  images_dir = os.path.join(data_dir, FLAGS.images_dir)
+  annotations_dir = os.path.join(data_dir, FLAGS.annotations_dir)
+  list_set = dataset_util.read_examples_list(list_set_path)
+  for idx, example in enumerate(list_set):
+    if idx % 100 == 0:
+      logging.info('On image %d of %d', idx, len(examples_list))
 
-      tf_example = dict_to_tf_example(data, FLAGS.data_dir, categories_dict,
-                                      FLAGS.ignore_difficult_instances)
-      writer.write(tf_example.SerializeToString())
+    # Annotation characteristics
+    ann_path = os.path.join(annotations_dir, example + '.txt')
+
+    # Read annots
+    data = [line.rstrip('\n').split() for line in open(ann_path)]
+    bboxes = []
+    labels = []
+    for ix, obj in data:
+      labels.append(float(data[0]))
+      bboxes.append([float(data[1]), float(data[2]), 
+                     float(data[3]), float(data[4])])
+
+    data = {
+      'data_dir': images_dir, 
+      'filename': exemple + '.jpg', 
+      'boxes': labels, 
+      'labels': labels, 
+    }
+
+    tf_example = dict_to_tf_example(data, FLAGS.data_dir, categories,
+                                    FLAGS.ignore_difficult_instances)
+    writer.write(tf_example.SerializeToString())
 
   writer.close()
 

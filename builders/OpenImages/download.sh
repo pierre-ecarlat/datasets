@@ -108,19 +108,11 @@ rm -r $TMP_DIR
 #############################################
 # PART 2: Get the dataset
 
-#if [ ! -d $OUTPUT ]; then
-#  mkdir -p $OUTPUT;
-#fi
 python $BUILDERS/OpenImages/download_dataset.py \
               $OUTPUT \
               $BUILDERS_HELPER \
-              "$CATEG"
-#if [ $(ls -p OpenImages/ | grep -v / | wc -l) -eq 0 ]; then
-#  echo "Failed to download the dataset..."
-#fi
-
-
-
+              "$CATEG" \
+              --clean
 
 
 
