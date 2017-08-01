@@ -36,7 +36,7 @@ if __name__ == "__main__":
   for i in range(len(RGB_tuples)):
     RGB_tuples[i] = [int((x*255-63)*4) for x in RGB_tuples[i]]
   
-  with io.FileIO(args.output, "a") as file:
+  with open(args.output, 'w') as f:
     for tup in RGB_tuples:
-      file.write(' '.join([str(tup[0]), str(tup[1]), str(tup[2])]) + "\n")
+      f.write(' '.join([str(tup[0]), str(tup[1]), str(tup[2])]) + "\n")
   

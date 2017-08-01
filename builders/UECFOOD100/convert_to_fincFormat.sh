@@ -61,7 +61,6 @@ mkdir $DATASET_OUTPUT_DIR/Images
 mkdir $DATASET_OUTPUT_DIR/ImageSets
 mkdir $DATASET_OUTPUT_DIR/infos
 
-
 ##############################################
 # Convert images one by one
 for i in `seq 1 $NB_CATEGORIES`; do
@@ -108,6 +107,8 @@ else
        "the visualization scripts (note: if you have the list of categories, you " \
        "can generate the colors using scripts/generate_colors.py)."
 fi
+ls -1q $DATASET_OUTPUT_DIR/Images/ | cut -d'.' -f1 > $DATASET_OUTPUT_DIR/ImageSets/all.txt
+
 
 ##############################################
 # Sign

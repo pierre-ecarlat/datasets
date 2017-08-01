@@ -108,6 +108,8 @@ else
        "the visualization scripts (note: if you have the list of categories, you " \
        "can generate the colors using scripts/generate_colors.py)."
 fi
+ls -1q $DATASET_OUTPUT_DIR/Images/ | cut -d'.' -f1 > $DATASET_OUTPUT_DIR/ImageSets/all.txt
+
 
 ##############################################
 # Sign

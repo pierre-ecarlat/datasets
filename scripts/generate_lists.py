@@ -73,11 +73,8 @@ if __name__ == "__main__":
   else:
     print "Unknown format."
   
-  # Get main directory
-  dir_lists = paths_to_['image_sets']
-  
   # Get the list of images
-  if not os.path.exists(os.path.join(dir_lists, args.inp + ".txt")):
+  if not os.path.exists(os.path.join(paths_to_['image_sets'], args.inp + ".txt")):
     print (args.inp + ".txt is missing.. Please compute it.")
     raise SystemExit
   
@@ -92,26 +89,26 @@ if __name__ == "__main__":
     raise SystemExit
   
   # Get caracteristics directory
-  dir_caracts = paths_to_['characts'] + args.inp
+  dir_characts = paths_to_['characts'] + args.inp
   
   # Create the output_categ_distrib_idxes.txt
-  nipc = [line.rstrip('\n') for line in open(os.path.join(dir_caracts, "nb_images_per_category.txt"))]
-  nipc_sorted_idx = sorted(range(len(nipc)), key=lambda k: int(nipc[k]), reverse=True)
-  
+  nipc = [line.rstrip('\n') for line in open(os.path.join(dir_characts, "nb_images_per_category.txt"))]
+  nipc_sorted_idx = sorted(range(len(nipc)), key=lambda k: int(nipc[k]))
+
   # Create the output_categ_idxes.txt
-  cipi = [line.rstrip('\n') for line in open(os.path.join(dir_caracts, "categories_idx_per_image.txt"))]
+  cipi = [line.rstrip('\n') for line in open(os.path.join(dir_characts, "categories_idx_per_image.txt"))]
   cipi_used = [False] * len(cipi)
   
   # Creates the sets
   out1 = ""
   out2 = ""
   # For each line in output_categ_distrib_idxes.txt
-  for curr_categ in nipc:
+  for curr_categ in nipc_sorted_idx:
     list_img = []
     for j in range(len(cipi)):
       if not cipi_used[j]:
         curr_cipi = cipi[j].split()
-        if str(int(curr_categ)-1) in curr_cipi[1:]: 
+        if str(int(curr_categ)+1) in curr_cipi[1:]: 
           list_img.append(curr_cipi[0])
           cipi_used[j] = True
     
@@ -120,10 +117,10 @@ if __name__ == "__main__":
       out1 += list_img[j] + "\n"
     for j in range(fp, len(list_img)):
       out2 += list_img[j] + "\n"
-  
+
   # Write results
   out1 = out1[:-1]
   out2 = out2[:-1]
-  open(os.path.join(dir_lists, args.out1 + ".txt"), 'w').writelines(out1)
-  open(os.path.join(dir_lists, args.out2 + ".txt"), 'w').writelines(out2)
+  open(os.path.join(paths_to_['image_sets'], args.out1 + ".txt"), 'w').writelines(out1)
+  open(os.path.join(paths_to_['image_sets'], args.out2 + ".txt"), 'w').writelines(out2)
   

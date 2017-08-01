@@ -1,6 +1,6 @@
 #!/bin/bash
 # Expected format: 
-# ./scripts/reduce_.sh DATASET_NAME NB_CATEGS ORIG_CATEGS
+# ./reduce_.sh DATASET_NAME NB_CATEGS ORIG_CATEGS
 
 
 ##############################################

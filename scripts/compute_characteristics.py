@@ -70,9 +70,9 @@ def createFincCaracts(dataset_path, list_name):
     boxes.append(image_boxes)
   
   # Create categories_idx_per_image.txt file
-  for box in boxes:
-    with io.FileIO(os.path.join(output_dir, "categories_idx_per_image.txt"), "a") as file:
-      file.write(" ".join([row if isinstance(row, str) else str(row[0]) for row in box]) + "\n")
+  with open(os.path.join(output_dir, "categories_idx_per_image.txt"), "a") as f:
+    for box in boxes:
+      f.write(" ".join([row if isinstance(row, str) else str(row[0]) for row in box]) + "\n")
   
   # Create nb_images_per_category.txt file
   categs = [0]*(max_categ + 1 - min_categ)
