@@ -40,7 +40,7 @@ from utils import dataset_util
 
 
 flags = tf.app.flags
-flags.DEFINE_string('data_dir', '', 'Root directory to raw UECFOOD256 dataset.')
+flags.DEFINE_string('data_dir', '', 'Root directory to raw UECFOOD100 dataset.')
 flags.DEFINE_string('set', 'train', 'Convert training set, validation set or '
                     'merged set.')
 flags.DEFINE_string('images_dir', 'Images',
@@ -136,7 +136,7 @@ def main(_):
 
   categories = [line.rstrip('\n') for line in open(FLAGS.categories_path)]
 
-  logging.info('Reading from UECFOOD256 dataset.')
+  logging.info('Reading from UECFOOD100 dataset.')
   list_set_path = os.path.join(data_dir, 'ImageSets', FLAGS.set + '.txt')
   images_dir = os.path.join(data_dir, FLAGS.images_dir)
   annotations_dir = os.path.join(data_dir, FLAGS.annotations_dir)

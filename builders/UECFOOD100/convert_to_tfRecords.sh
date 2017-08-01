@@ -1,7 +1,7 @@
 #!/bin/bash
 # Expected format
 # NOTE: require to have been converted into the fincFormat first (will be changed)
-# ./builders/UECFOOD256/convert_to_tfRecords.sh UECFOOD256 false
+# ./builders/UECFOOD100/convert_to_tfRecords.sh UECFOOD100 false
 
 ##############################################
 # Arguments
@@ -28,7 +28,7 @@ SCRIPTS=$ROOT/scripts
 IMAGES_DIR=$DATASET_DIR"/Images"
 ANNOTATIONS_DIR=$DATASET_DIR"/Annotations"
 IMAGESETS_DIR=$DATASET_DIR"/ImageSets"
-NB_CATEGORIES=256
+NB_CATEGORIES=100
 
 DATASET_OUTPUT_DIR=$DATASET_DIR"_"$FORMAT_NAME
 IMAGE_EXTENSION="jpg" # jpg / png supported
@@ -49,8 +49,8 @@ if [ -d $DATASET_OUTPUT_DIR ]; then
     echo "> If you want to re-download it, simply remove $DATASET_OUTPUT_DIR."
     exit 1
 fi
-if [ ! -f $BUILDERS/UECFOOD256/categories.txt ]; then
-    echo "The conversion require the file $BUILDERS/UECFOOD256/categories.txt."
+if [ ! -f $BUILDERS/UECFOOD100/categories.txt ]; then
+    echo "The conversion require the file $BUILDERS/UECFOOD100/categories.txt."
     exit 1
 fi
 
@@ -73,17 +73,17 @@ mkdir $DATASET_OUTPUT_DIR/infos
 SETS=("train" "val" "trainval" "test")
 
 for i in "${!SETS[@]}"; do
-  python $BUILDERS/UECFOOD256/create_tf_records.py \
+  python $BUILDERS/UECFOOD100/create_tf_records.py \
                   --data_dir $DATASET_DIR \
                   --set ${SETS[$i]} \
-                  --output_path $DATASET_OUTPUT_DIR/UECFOOD256_${SETS[$i]}.tfrecord \
-                  --categories_path $BUILDERS/UECFOOD256/categories.txt
+                  --output_path $DATASET_OUTPUT_DIR/UECFOOD100_${SETS[$i]}.tfrecord \
+                  --categories_path $BUILDERS/UECFOOD100/categories.txt
 done
 
 
 ##############################################
 # Transfer the lists
-cp $BUILDERS/UECFOOD256/categories.txt $DATASET_OUTPUT_DIR/infos/
+cp $BUILDERS/UECFOOD100/categories.txt $DATASET_OUTPUT_DIR/infos/
 
 
 ##############################################
