@@ -83,7 +83,7 @@ done
 
 ##############################################
 # Transfer the lists
-cp $BUILDERS/UECFOOD256/label_map.pbtxt $DATASET_OUTPUT_DIR/infos/
+cp $BUILDERS/UECFOOD256/categories.txt $DATASET_OUTPUT_DIR/infos/
 
 
 ##############################################
@@ -94,5 +94,5 @@ echo "tfRecords" > $DATASET_OUTPUT_DIR/.format
 ##############################################
 # Clean up
 chmod -R 755 $DATASET_OUTPUT_DIR
-if [ "$DUPLICATE" = false ]; then rm $DATASET_DIR; fi
+if [ "$DUPLICATE" = false ]; then rm -r $DATASET_DIR; fi
 
