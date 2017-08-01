@@ -20,7 +20,7 @@ Example usage:
         --output_path=/home/user/pascal.record
 """
 
-"""Slightly modified from the original version"""
+# Slightly modified from the original version
 
 from __future__ import absolute_import
 from __future__ import division
