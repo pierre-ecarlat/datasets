@@ -100,10 +100,10 @@ def dict_to_tf_example(data,
   classes = []
   classes_text = []
   for ix, obj in enumerate(data['boxes']):
-    xmin.append(np.clip(float(obj[0]) / width), 0, 1)
-    ymin.append(np.clip(float(obj[1]) / height), 0, 1)
-    xmax.append(np.clip(float(obj[2]) / width), 0, 1)
-    ymax.append(np.clip(float(obj[3]) / height), 0, 1)
+    xmin.append(np.clip(float(obj[0]) / width, 0, 1))
+    ymin.append(np.clip(float(obj[1]) / height, 0, 1))
+    xmax.append(np.clip(float(obj[2]) / width, 0, 1))
+    ymax.append(np.clip(float(obj[3]) / height, 0, 1))
     classes_text.append(categories[int(data['labels'][ix])-1])
     classes.append(int(data['labels'][ix]))
 
