@@ -31,6 +31,7 @@ import io
 import logging
 import os
 import re
+import numpy as np
 
 from lxml import etree
 import PIL.Image
