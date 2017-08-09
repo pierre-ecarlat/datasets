@@ -129,11 +129,12 @@ if __name__ == "__main__":
   for ix, img in enumerate(imagesPerCategs[sortedIndexes[0]]):
     for ix2, categ in enumerate(categsPerImages_dict[img]):
       balanced_nbBoxesPerCateg[categ] += 1
-      categsPerImages[img].pop(ix2)
+      categsPerImages_dict[img].pop(ix2)
     balanced_imagesList.append(img)
     imagesPerCategs[sortedIndexes[0]].pop(ix)
 
   while True in [nbBoxes < minNbBox for nbBoxes in balanced_nbBoxesPerCateg]:
+    change = False
     for categ_idx in range(1, NB_CATEG):
       categ_to_balance = sortedIndexes[categ_idx]
       
@@ -147,6 +148,10 @@ if __name__ == "__main__":
           categsPerImages_dict[img].pop(ix2)
         balanced_imagesList.append(img)
         imagesPerCategs[categ_to_balance].pop(ix)
+        change = True
+    
+    if not change:
+      break
   
   # Display
   print 'Current balance:'
