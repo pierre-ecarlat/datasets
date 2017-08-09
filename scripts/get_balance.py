@@ -149,7 +149,7 @@ if __name__ == "__main__":
         balanced_imagesList.append(img)
         imagesPerCategs[categ_to_balance].pop(ix)
         change = True
-    
+
     if not change:
       break
   
@@ -159,8 +159,12 @@ if __name__ == "__main__":
   print 'Maximum nb of boxes over the classes:', str(max(balanced_nbBoxesPerCateg))
   print 'Standard deviation:', str(np.std(balanced_nbBoxesPerCateg))
 
-  # Print the list of images
-  print balanced_imagesList
+  # Save the list of images
+  approval = raw_input('Keep this one? [y/N] > ') in ['Y', 'y', 'Yes', 'yes', 'YES']
+  if approval:
+    with open('output.txt', 'w') as f:
+      f.write('\n'.join(balanced_imagesList))
+    print 'Saved here, in the output.txt file'
   
   
   raise SystemExit
