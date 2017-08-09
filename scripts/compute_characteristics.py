@@ -63,9 +63,9 @@ def createFincCaracts(dataset_path, list_name):
     image_boxes.append(name)
     annotation = [line.rstrip('\n').split() for line in open(annotation_path)]
     for box in annotation:
-      image_boxes.append([int(b) for b in box])
-      if int(box[0]) > max_categ: max_categ = int(box[0])
-      if int(box[0]) < min_categ: min_categ = int(box[0]) 
+      image_boxes.append([int(float(b)) for b in box])
+      if int(float(box[0])) > max_categ: max_categ = int(float(box[0]))
+      if int(float(box[0])) < min_categ: min_categ = int(float(box[0])) 
       nb_boxes += 1
     boxes.append(image_boxes)
   
