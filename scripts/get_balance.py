@@ -128,6 +128,7 @@ if __name__ == "__main__":
   # Add all the images with the weakest category
   for ix, img in enumerate(imagesPerCategs[sortedIndexes[0]]):
     for ix2, categ in enumerate(categsPerImages_dict[img]):
+      categ -= 1
       balanced_nbBoxesPerCateg[categ] += 1
       categsPerImages_dict[img].pop(ix2)
     balanced_imagesList.append(img)
@@ -165,17 +166,22 @@ if __name__ == "__main__":
 
   
   # Display
-  print 'Current balance:'
-  print 'Minimum nb of boxes over the classes:', str(min(balanced_nbBoxesPerCateg))
-  print 'Maximum nb of boxes over the classes:', str(max(balanced_nbBoxesPerCateg))
+  print 'Total number of annotated images:', len(categsPerImages)
+  print 'Total number of bounding boxes over them:', sum(nbBoxesPerCateg)
+  print 
+  print 'Current balanced set:'
+  print len(balanced_imagesList), 'images, with', sum(balanced_nbBoxesPerCateg), 'boxes'
+  print 'Nb of boxes between', str(min(balanced_nbBoxesPerCateg)), 'and', str(max(balanced_nbBoxesPerCateg))
   print 'Standard deviation:', str(np.std(balanced_nbBoxesPerCateg))
+  print 'Complete list:'
+  print balanced_nbBoxesPerCateg
   print
   print 'Weakest to strongest categories (top and low 3):'
   for i in range(3):
-    print '-', categories[sortedIndexes[i]], '->', str(nbBoxesPerCateg[sortedIndexes[i]]), 'boxes'
+    print '-', categories[sortedIndexes[i]], '->', str(balanced_nbBoxesPerCateg[sortedIndexes[i]]), 'boxes'
   print ' ', '...'
   for i in range(NB_CATEG-3, NB_CATEG):
-    print '-', categories[sortedIndexes[i]], '->', str(nbBoxesPerCateg[sortedIndexes[i]]), 'boxes'
+    print '-', categories[sortedIndexes[i]], '->', str(balanced_nbBoxesPerCateg[sortedIndexes[i]]), 'boxes'
   print
 
   # Save the list of images
