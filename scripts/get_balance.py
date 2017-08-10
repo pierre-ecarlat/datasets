@@ -126,31 +126,37 @@ if __name__ == "__main__":
   balanced_nbBoxesPerCateg = [0]*(NB_CATEG)
   balanced_imagesList = []
   # Add all the images with the weakest category
-  for ix, img in enumerate(imagesPerCategs[sortedIndexes[0]]):
-    for ix2, categ in enumerate(categsPerImages_dict[img]):
+  for img in imagesPerCategs[sortedIndexes[0]]:
+    for categ in categsPerImages_dict[img]:
       categ -= 1
       balanced_nbBoxesPerCateg[categ] += 1
-      categsPerImages_dict[img].pop(ix2)
     balanced_imagesList.append(img)
-    imagesPerCategs[sortedIndexes[0]].pop(ix)
+    categsPerImages_dict[img] = []
+  imagesPerCategs[sortedIndexes[0]] = []
 
   while True in [nbBoxes < minNbBox for nbBoxes in balanced_nbBoxesPerCateg]:
     change = False
     for categ_idx in range(1, NB_CATEG):
       categ_to_balance = sortedIndexes[categ_idx]
       
-      for ix, img in enumerate(imagesPerCategs[categ_to_balance]):
+      used_imgs = []
+      for img in imagesPerCategs[categ_to_balance]:
         if balanced_nbBoxesPerCateg[categ_to_balance] >= minNbBox:
           break
-        
-        for ix2, categ in enumerate(categsPerImages_dict[img]):
+        if img in used_imgs:
+          continue
+
+        used_imgs.append(img)
+        for categ in categsPerImages_dict[img]:
           categ -= 1
           balanced_nbBoxesPerCateg[categ] += 1
-          categsPerImages_dict[img].pop(ix2)
         balanced_imagesList.append(img)
-        imagesPerCategs[categ_to_balance].pop(ix)
+        categsPerImages_dict[img] = []
         change = True
 
+      imagesPerCategs[categ_to_balance] = [img \
+          for img in imagesPerCategs[categ_to_balance] if not img in used_imgs]
+      
     if not change:
       break
 
