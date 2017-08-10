@@ -152,12 +152,31 @@ if __name__ == "__main__":
 
     if not change:
       break
+
+  # Get list of categories if exists
+  categories = {}
+  categs_file = os.path.join(args.dataset, 'infos', 'categories.txt')
+  if os.path.isfile(categs_file):
+    categs = [l.rstrip('\n') for l in open(categs_file)]
+  else:
+    categs = [str(x) for x in range(NB_CATEG)]
+  for ix, categ in enumerate(categs):
+    categories[ix] = categ
+
   
   # Display
   print 'Current balance:'
   print 'Minimum nb of boxes over the classes:', str(min(balanced_nbBoxesPerCateg))
   print 'Maximum nb of boxes over the classes:', str(max(balanced_nbBoxesPerCateg))
   print 'Standard deviation:', str(np.std(balanced_nbBoxesPerCateg))
+  print
+  print 'Weakest to strongest categories (top and low 3):'
+  for i in range(3):
+    print '-', categories[sortedIndexes[i]], '->', str(nbBoxesPerCateg[sortedIndexes[i]]), 'boxes'
+  print ' ', '...'
+  for i in range(NB_CATEG-3, NB_CATEG):
+    print '-', categories[sortedIndexes[i]], '->', str(nbBoxesPerCateg[sortedIndexes[i]]), 'boxes'
+  print
 
   # Save the list of images
   approval = raw_input('Keep this one? [y/N] > ') in ['Y', 'y', 'Yes', 'yes', 'YES']
