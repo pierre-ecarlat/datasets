@@ -7,8 +7,7 @@ python scripts/compute_characteristics.py DATASET_NAME --list LIST_NAME
 Generate a folder in the list's directory including some characteristics of a set (all, trainval, test, ..), such as:
 - the 'categories_idx_per_image.txt' (line x: xth image) "image_name bb1_categ bb2_categ .."
 - the 'nb_images_per_category' (line x = xth category): "nb_images"
-- the 'nb_images_with_x_boxes' (line x = x nb of box): "nb_images"
-`fincFormat` is the only supported format so far, this probably won't change.
+- the 'nb_images_with_x_boxes' (line x = x nb of box): "nb_images"  
 
 
 ```
@@ -21,7 +20,7 @@ Visualize all the boxes belonging to a category in a dataset (this crop the imag
 python scripts/display_dataset.py DATASET_NAME
 ```
 Visualize a dataset with its bounding boxes.  
-Supports `fincFormat` and `vocFormat`.
+Supports `vocFormat`.
 
 
 ```
@@ -33,7 +32,6 @@ Generate a list of `nb_categs` colors (equally distributed over the color spectr
 ```
 python scripts/generate_lists.sh DATASET_NAME --inp all --out1 trainval --out2 test
 ```
-Generate sublists from an initial set (example: generates `trainval` and `test` from the `all` set (default)). The set is splitted into two separate sets, supposed to have, as much as possible, the same class repartition (in case of imbalanced datasets). Greedy algorithm, be tolerant.  
-If may also computes a characteristics folder in the lists' directory.
+Generate sublists from an initial set (example: generates `trainval` and `test` from the `all` set (default)). The set is splitted into two separate sets, supposed to have, as much as possible, the same class repartition (in case of imbalanced datasets). If may also computes a characteristics folder in the lists' directory.
 
 
